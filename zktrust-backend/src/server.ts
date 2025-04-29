@@ -99,26 +99,22 @@ const verifyGumroadProof: RequestHandler = async (req: Request, res: Response) =
 
     console.log('Proof verified successfully!');
 
-    // Extract product name from public signals if available
+    // CORRECTED Product Name Extraction
     let productName = 'Unknown Product';
-
-    // Accessing public signals based on the Proof structure
-    // Note: This might need adjustment based on the actual Proof structure
-    const publicSignals = (proofObject as any).publicSignals || [];
     
-    if (Array.isArray(publicSignals)) {
-      const subjectSignal = publicSignals.find((s: PublicSignal) => s.name === 'subject');
+    // Extract from props.publicData which contains named signals extracted by regex
+    if (proofObject.props && proofObject.props.publicData) {
+      const publicData = proofObject.props.publicData;
       
-      if (subjectSignal?.value) {
-        try {
-          const subjectArray = JSON.parse(subjectSignal.value);
-          if (Array.isArray(subjectArray) && subjectArray.length > 0) {
-            productName = subjectArray[0]; // Extract the actual string
-          }
-        } catch (parseError) {
-          console.error("Failed to parse subject signal:", parseError);
-        }
+      // Ensure 'subject' exists and is an array before accessing
+      if (publicData.subject && Array.isArray(publicData.subject) && publicData.subject.length > 0) {
+        productName = publicData.subject[0];
+        console.log("Extracted product name:", productName);
+      } else {
+        console.warn("Could not find 'subject' in proof props publicData. Structure:", publicData);
       }
+    } else {
+      console.warn("Proof object does not contain props.publicData structure");
     }
 
     // Return success response with product name
