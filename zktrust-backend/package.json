@@ -1,0 +1,28 @@
+{
+  "name": "zktrust-backend",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "watch": "nodemon --exec ts-node src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Backend for ZKTrust decentralized review platform",
+  "dependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.3",
+    "@zk-email/sdk": "^0.0.139",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "nodemon": "^3.1.10"
+  }
+}
