@@ -251,10 +251,17 @@ const GumroadProofGenerator = () => {
     setSubmissionError(null);
     setSubmissionSuccess(false);
     
+    // Add detailed logging of the proof object
+    console.log("Submitting review with Proof Object:", JSON.stringify(proofResult, null, 2));
+    
     try {
       // Send proof and review to backend
       console.log('Submitting review...');
       console.log('Submission endpoint:', `${API_URL}/submit-review`);
+      
+      // Ensure the proof object structure is preserved correctly
+      const proofToSubmit = {...proofResult};
+      console.log('Final structured proof being sent:', JSON.stringify(proofToSubmit, null, 2));
       
       const response = await fetch(`${API_URL}/submit-review`, {
         method: 'POST',
@@ -264,7 +271,7 @@ const GumroadProofGenerator = () => {
           'Pragma': 'no-cache'
         },
         body: JSON.stringify({ 
-          proofObject: proofResult,
+          proofObject: proofToSubmit,
           reviewText: reviewText.trim()
         }),
         mode: 'cors' // Explicitly set CORS mode

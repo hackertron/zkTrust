@@ -142,6 +142,10 @@ const verifyGumroadProof: RequestHandler = async (req: Request, res: Response) =
 // Review submission endpoint - replaces simple verification
 const submitReview: RequestHandler = async (req: Request, res: Response) => {
   try {
+    console.log('--- Received Raw Request Body for Submit ---');
+    console.log(JSON.stringify(req.body, null, 2));
+    console.log('------------------------------------------');
+    
     const { proofObject, reviewText } = req.body as SubmitReviewRequest;
 
     // Basic validation
@@ -152,17 +156,44 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
 
     console.log('Received review submission for verification...');
 
-    // --- Nullifier Extraction ---
-    const publicSignals = (proofObject as any).publicSignals || [];
-    const nullifierSignal = publicSignals.find((s: PublicSignal) => s.name === 'emailNullifier'); // Adjust 'emailNullifier' if the signal name is different
-
-    if (!nullifierSignal?.value) {
-      console.error('Email nullifier not found in proof signals.');
-      res.status(400).json({ verified: false, message: 'Invalid proof: Nullifier missing.' });
+    // --- CORRECTED Nullifier Extraction from publicOutputs ---
+    const proofDataFromBody = req.body.proofObject;
+    if (!proofDataFromBody || !proofDataFromBody.props || !Array.isArray(proofDataFromBody.props.publicOutputs)) {
+      console.error('Proof object, props, or publicOutputs array is missing/invalid in request body');
+      // Log the received object structure for debugging
+      console.error("Received proofObject structure:", JSON.stringify(proofDataFromBody, null, 2)); 
+      res.status(400).json({ verified: false, message: 'Malformed proof object received (missing props or publicOutputs).' });
       return;
     }
-    const emailNullifier = nullifierSignal.value;
-    console.log(`Extracted Nullifier: ${emailNullifier}`);
+
+    const publicOutputs: string[] = proofDataFromBody.props.publicOutputs;
+
+    console.log('--- Received Public Outputs ---'); 
+    console.log(JSON.stringify(publicOutputs, null, 2));        
+    console.log('-------------------------------'); 
+
+    // *** Determine the correct index for the email nullifier ***
+    // This depends on the blueprint's circuit definition. 
+    // Common ZK Email circuits output: [pubkey_hash, timestamp, ..., emailNullifier, ...]
+    // Let's **assume** it's the 4th output (index 3) based on typical patterns.
+    const NULLIFIER_INDEX = 3; 
+
+    if (publicOutputs.length <= NULLIFIER_INDEX) {
+      console.error(`Public outputs array too short to contain nullifier at index ${NULLIFIER_INDEX}. Length: ${publicOutputs.length}`);
+      console.error("All public outputs:", publicOutputs); 
+      res.status(400).json({ verified: false, message: `Invalid proof: Not enough public outputs (expected at least ${NULLIFIER_INDEX + 1}).` });
+      return;
+    }
+
+    const emailNullifier = publicOutputs[NULLIFIER_INDEX];
+
+    if (!emailNullifier || typeof emailNullifier !== 'string' || emailNullifier.trim() === '') {
+      console.error(`Email nullifier not found or invalid at index ${NULLIFIER_INDEX}. Value:`, emailNullifier);
+      console.error("All public outputs:", publicOutputs); 
+      res.status(400).json({ verified: false, message: `Invalid proof: Nullifier missing or invalid at expected index ${NULLIFIER_INDEX}.` });
+      return;
+    }
+    console.log(`Extracted Nullifier (from index ${NULLIFIER_INDEX}): ${emailNullifier}`);
 
     // --- Duplicate Check ---
     db.get('SELECT id FROM reviews WHERE emailNullifier = ?', [emailNullifier], async (err, row) => {
@@ -194,18 +225,18 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
 
         console.log('Proof verified successfully!');
 
-        // --- Extract Product Name ---
+        // --- CORRECTED Product Name Extraction ---
         let productName = 'Unknown Product';
-        const subjectSignal = publicSignals.find((s: PublicSignal) => s.name === 'subject');
-        if (subjectSignal?.value) {
-          try {
-            const subjectArray = JSON.parse(subjectSignal.value);
-            if (Array.isArray(subjectArray) && subjectArray.length > 0) {
-              productName = subjectArray[0];
-            }
-          } catch (parseError) { console.error("Failed to parse subject signal:", parseError); }
+        // publicData holds the named signals extracted by regex
+        const publicData = proofDataFromBody.props.publicData || {}; 
+        // Ensure 'subject' exists and is an array before accessing
+        if (publicData.subject && Array.isArray(publicData.subject) && publicData.subject.length > 0) {
+            productName = publicData.subject[0]; 
+        } else {
+            console.warn("Could not find 'subject' in proof props publicData. Structure:", publicData);
         }
         console.log(`Verified Product: ${productName}`);
+        // --- End CORRECTED Product Name Extraction ---
 
         // --- Save to Database ---
         const insertSql = `
@@ -250,9 +281,10 @@ app.get('/api/reviews', (req: Request, res: Response) => {
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.error("Error fetching reviews:", err.message);
-      return res.status(500).json({ error: "Failed to fetch reviews." });
+      res.status(500).json({ error: "Failed to fetch reviews." });
+      return;
     }
-    return res.status(200).json(rows);
+    res.status(200).json(rows);
   });
 });
 
