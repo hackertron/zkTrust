@@ -7,6 +7,12 @@ const GumroadProofGenerator = dynamic(
   { ssr: false }
 );
 
+// Import the ReviewList component with client-side rendering
+const ReviewList = dynamic(
+  () => import('@/components/ReviewList'),
+  { ssr: false }
+);
+
 export default function Home() {
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-gray-100">
@@ -22,9 +28,14 @@ export default function Home() {
           </p>
         </header>
         
-        <div className="card fadeIn">
+        <div className="card fadeIn mb-16">
           {/* GumroadProofGenerator will be loaded client-side only */}
           <GumroadProofGenerator />
+        </div>
+        
+        <div className="card fadeIn">
+          {/* ReviewList will be loaded client-side only */}
+          <ReviewList />
         </div>
         
         <footer className="mt-16 text-center text-gray-500 text-sm">
