@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic';
 
-// Import the GumroadProofGenerator component with client-side rendering only
+// Import the ProofGenerator component with client-side rendering only
 // This is necessary because the ZK Email SDK uses browser-specific APIs
-const GumroadProofGenerator = dynamic(
-  () => import('@/components/GumroadProofGenerator'),
+const ProofGenerator = dynamic(
+  () => import('@/components/ProofGenerator'),
   { ssr: false }
 );
 
@@ -29,8 +29,8 @@ export default function Home() {
         </header>
         
         <div className="card fadeIn mb-16">
-          {/* GumroadProofGenerator will be loaded client-side only */}
-          <GumroadProofGenerator />
+          {/* ProofGenerator will be loaded client-side only */}
+          <ProofGenerator />
         </div>
         
         <div className="card fadeIn">
