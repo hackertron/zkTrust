@@ -7,12 +7,14 @@ import db from './database'; // Make sure database import is present
 // Define interface for the proof verification request
 interface VerifyProofRequest {
   proofObject: Proof;
+  blueprintId: string; // Added blueprintId field
 }
 
 // Define interface for the submit review request
 interface SubmitReviewRequest {
   proofObject: Proof;
   reviewText: string;
+  blueprintId: string; // Added blueprintId field
 }
 
 // Define interface for the public signals
@@ -58,8 +60,8 @@ app.get('/api/health', (req: Request, res: Response) => {
 // Proof verification endpoint
 const verifyGumroadProof: RequestHandler = async (req: Request, res: Response) => {
   try {
-    // Get proof object from request body
-    const { proofObject } = req.body as VerifyProofRequest;
+    // Get proof object and blueprint ID from request body
+    const { proofObject, blueprintId } = req.body as VerifyProofRequest;
 
     // Validate if proof object exists
     if (!proofObject) {
@@ -70,10 +72,17 @@ const verifyGumroadProof: RequestHandler = async (req: Request, res: Response) =
       return; // Return void, not the response
     }
 
-    console.log('Received proof for verification...');
+    // Validate if blueprint ID exists
+    if (!blueprintId || typeof blueprintId !== 'string') {
+      res.status(400).json({
+        verified: false,
+        message: 'Blueprint ID is required'
+      });
+      return;
+    }
 
-    // Define the blueprint ID (make sure it matches the one used in frontend)
-    const blueprintId = 'hackertron/GumroadProof@v2';
+    console.log('Received proof for verification...');
+    console.log(`Using blueprint ID: ${blueprintId}`);
 
     // Initialize the SDK
     console.log('Initializing ZK Email SDK...');
@@ -142,13 +151,21 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
     console.log(JSON.stringify(req.body, null, 2));
     console.log('------------------------------------------');
     
-    const { proofObject, reviewText } = req.body as SubmitReviewRequest;
+    const { proofObject, reviewText, blueprintId } = req.body as SubmitReviewRequest;
 
     // Basic validation
     if (!proofObject || !reviewText || typeof reviewText !== 'string' || reviewText.trim() === '') {
       res.status(400).json({ verified: false, message: 'Proof object and review text are required.' });
       return;
     }
+
+    // Validate blueprint ID
+    if (!blueprintId || typeof blueprintId !== 'string') {
+      res.status(400).json({ verified: false, message: 'Blueprint ID is required.' });
+      return;
+    }
+
+    console.log(`Using blueprint ID: ${blueprintId}`);
 
     console.log('Received review submission for verification...');
 
@@ -206,10 +223,10 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
 
       // --- If Nullifier is New, Proceed with Verification ---
       console.log('Nullifier is unique. Proceeding with proof verification...');
-      const blueprintId = 'hackertron/GumroadProof@v2'; // Use correct slug
       const sdk = zkeSDK();
 
       try {
+        console.log(`Fetching blueprint with ID: ${blueprintId}`);
         const blueprint = await sdk.getBlueprint(blueprintId);
         const isValid = await blueprint.verifyProof(proofObject);
 
