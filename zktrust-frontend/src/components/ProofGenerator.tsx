@@ -19,6 +19,17 @@ const supportedBlueprints = [
   // { name: 'Topmate Booking', id: 'your_github/topmate_slug@vX' }, // Add later if needed
 ];
 
+// Define proof generation phases
+const PROOF_PHASES = [
+  'Initializing circuits...',
+  'Generating cryptographic parameters...',
+  'Preparing email data...',
+  'Building constraint system...',
+  'Computing witness...',
+  'Generating proof...',
+  'Finalizing verification...'
+];
+
 const ProofGenerator = () => {
   // State variables
   const [emailContent, setEmailContent] = useState<string>('');
@@ -40,6 +51,12 @@ const ProofGenerator = () => {
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>('idle');
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean>(false);
+  
+  // New state variables for progress bar
+  const [progress, setProgress] = useState<number>(0);
+  const [currentPhase, setCurrentPhase] = useState<string>(PROOF_PHASES[0]);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number>(0);
 
   // File input reference
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,6 +67,84 @@ const ProofGenerator = () => {
       verifyProof(proofResult);
     }
   }, [proofResult]);
+  
+  // Progress simulation effect
+  useEffect(() => {
+    // Start progress simulation when loading begins
+    if (isLoading) {
+      setProgress(0);
+      setCurrentPhase(PROOF_PHASES[0]);
+      startTimeRef.current = Date.now();
+      
+      // Clear any existing interval
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      
+      // Create new interval for updating progress
+      progressIntervalRef.current = setInterval(() => {
+        setProgress(prevProgress => {
+          // Calculate how much time has passed since we started
+          const elapsedSeconds = (Date.now() - startTimeRef.current) / 1000;
+          
+          // Non-linear progress simulation
+          // Move faster at the beginning, slower as we approach completion
+          let newProgress;
+          
+          if (prevProgress < 20) {
+            // Initial phase - move quickly (3% per second)
+            newProgress = Math.min(20, prevProgress + 3);
+          } else if (prevProgress < 50) {
+            // Middle phase - move moderately (1.5% per second)
+            newProgress = Math.min(50, prevProgress + 1.5);
+          } else if (prevProgress < 75) {
+            // Later phase - move slower (0.8% per second)
+            newProgress = Math.min(75, prevProgress + 0.8);
+          } else {
+            // Final phase - move very slowly (0.3% per second)
+            // Never reach 100% with the simulation
+            newProgress = Math.min(90, prevProgress + 0.3);
+          }
+          
+          // Update the current phase based on progress
+          const phaseIndex = Math.min(
+            Math.floor(newProgress / (90 / PROOF_PHASES.length)),
+            PROOF_PHASES.length - 1
+          );
+          setCurrentPhase(PROOF_PHASES[phaseIndex]);
+          
+          return newProgress;
+        });
+      }, 1000); // Update every second
+      
+      // Return cleanup function
+      return () => {
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current);
+          progressIntervalRef.current = null;
+        }
+      };
+    } else if (proofResult) {
+      // When proof is completed successfully, immediately set progress to 100%
+      setProgress(100);
+      setCurrentPhase('Proof generated successfully!');
+      
+      // Clear interval
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    } else {
+      // Reset progress when not loading
+      setProgress(0);
+      
+      // Clear interval
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    }
+  }, [isLoading, proofResult]);
 
   // Handle drag events
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -317,6 +412,15 @@ const ProofGenerator = () => {
 
   // Get current blueprint name
   const currentBlueprintName = supportedBlueprints.find(bp => bp.id === selectedBlueprintId)?.name || 'Proof';
+  
+  // Function to calculate estimated time remaining
+  const getEstimatedTimeRemaining = () => {
+    if (progress < 10) return 'about 1-2 minutes';
+    if (progress < 30) return 'about 1 minute';
+    if (progress < 60) return 'about 45 seconds';
+    if (progress < 80) return 'about 30 seconds';
+    return 'less than 15 seconds';
+  };
 
   return (
     <div className="space-y-6">
@@ -452,18 +556,37 @@ const ProofGenerator = () => {
       </div>
 
       {isLoading && (
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md shadow-sm animate-pulse">
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md shadow-sm">
           <div className="flex items-start">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-3 flex-shrink-0">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            <div>
+            <div className="w-full">
               <h3 className="text-lg font-medium text-blue-800">Generating proof...</h3>
-              <p className="mt-1 text-sm text-blue-600">
-                This process is computationally intensive and may take 30 seconds to a few minutes.
-                Please don't close this page.
+              
+              {/* Progress percentage and phase */}
+              <div className="flex justify-between items-center mt-2 text-sm">
+                <span className="text-blue-700 font-medium">{currentPhase}</span>
+                <span className="text-blue-700">{Math.round(progress)}%</span>
+              </div>
+              
+              {/* Progress bar */}
+              <div className="mt-2 h-2 w-full bg-blue-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              
+              {/* Estimated time */}
+              <p className="mt-2 text-sm text-blue-600">
+                Estimated time remaining: {getEstimatedTimeRemaining()}
+              </p>
+              
+              <p className="mt-3 text-xs text-blue-600">
+                This process is computationally intensive. Please don't close this page.
               </p>
             </div>
           </div>
