@@ -15,6 +15,7 @@ interface SubmitReviewRequest {
   proofObject: Proof;
   reviewText: string;
   blueprintId: string; // Added blueprintId field
+  rating: number; // Added rating field
 }
 
 // Define interface for the public signals
@@ -151,7 +152,7 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
     console.log(JSON.stringify(req.body, null, 2));
     console.log('------------------------------------------');
     
-    const { proofObject, reviewText, blueprintId } = req.body as SubmitReviewRequest;
+    const { proofObject, reviewText, blueprintId, rating } = req.body as SubmitReviewRequest;
 
     // Basic validation
     if (!proofObject || !reviewText || typeof reviewText !== 'string' || reviewText.trim() === '') {
@@ -162,6 +163,12 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
     // Validate blueprint ID
     if (!blueprintId || typeof blueprintId !== 'string') {
       res.status(400).json({ verified: false, message: 'Blueprint ID is required.' });
+      return;
+    }
+    
+    // Validate rating
+    if (typeof rating !== 'number' || rating < 1 || rating > 5 || !Number.isInteger(rating)) {
+      res.status(400).json({ verified: false, message: 'Invalid rating value. Must be an integer between 1 and 5.' });
       return;
     }
 
@@ -251,12 +258,22 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
         console.log(`Verified Product: ${productName}`);
         // --- End CORRECTED Product Name Extraction ---
 
+        // --- Extract service name from blueprint ID ---
+        let serviceName = 'Unknown Service';
+        if (blueprintId) {
+          // Extract service name from blueprint ID format: username/ServiceName@version
+          const matches = blueprintId.match(/\w+\/(\w+)@/);
+          if (matches && matches.length > 1) {
+            serviceName = matches[1];
+          }
+        }
+        
         // --- Save to Database ---
         const insertSql = `
-          INSERT INTO reviews (productName, reviewText, isVerified, emailNullifier)
-          VALUES (?, ?, ?, ?)
+          INSERT INTO reviews (productName, reviewText, isVerified, emailNullifier, serviceName, blueprintId, rating)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
-        db.run(insertSql, [productName, reviewText, true, emailNullifier], function (insertErr) {
+        db.run(insertSql, [productName, reviewText, true, emailNullifier, serviceName, blueprintId, rating], function (insertErr) {
           if (insertErr) {
             console.error('Database error during insert:', insertErr.message);
             // Handle potential race condition if nullifier was inserted between check and insert
@@ -271,7 +288,7 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
           res.status(200).json({ 
             success: true, 
             message: 'Review submitted and verified!', 
-            productId: this.lastID, 
+            reviewId: this.lastID, // Changed key from productId for clarity
             productName: productName 
           });
         });
@@ -290,7 +307,7 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
 
 // API endpoint to get all reviews (REMOVED redundant CORS header)
 app.get('/api/reviews', (req: Request, res: Response) => {
-  const sql = "SELECT id, productName, reviewText, isVerified, createdAt FROM reviews ORDER BY createdAt DESC";
+  const sql = "SELECT id, productName, reviewText, isVerified, createdAt, serviceName, rating FROM reviews ORDER BY createdAt DESC";
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.error("Error fetching reviews:", err.message);

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import zkeSDK, { Proof } from '@zk-email/sdk';
+import StarRatingInput from './StarRatingInput';
 
 // Define API URL - now pointing to port 3002 for the backend
 const API_URL = 'http://localhost:3002/api';
@@ -48,6 +49,7 @@ const ProofGenerator = () => {
 
   // New state variables for review submission
   const [reviewText, setReviewText] = useState<string>('');
+  const [rating, setRating] = useState<number>(0); // Added rating state
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>('idle');
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean>(false);
@@ -239,6 +241,7 @@ const ProofGenerator = () => {
     setSubmissionError(null);
     setSubmissionSuccess(false);
     setReviewText('');
+    setRating(0); // Reset rating
   }, []);
 
   // Function to generate the proof
@@ -254,6 +257,7 @@ const ProofGenerator = () => {
     setSubmissionStatus('idle');
     setSubmissionError(null);
     setSubmissionSuccess(false);
+    setRating(0); // Reset rating
 
     // Use the selected blueprint ID from state
     const blueprintId = selectedBlueprintId;
@@ -353,6 +357,12 @@ const ProofGenerator = () => {
       setSubmissionError('Please enter a review');
       return;
     }
+    
+    // Validate rating is selected (must be 1-5)
+    if (rating === 0) {
+      setSubmissionError('Please select a star rating');
+      return;
+    }
 
     // Set submission status
     setSubmissionStatus('submitting');
@@ -381,7 +391,8 @@ const ProofGenerator = () => {
         body: JSON.stringify({
           proofObject: proofToSubmit,
           reviewText: reviewText.trim(),
-          blueprintId: selectedBlueprintId // Add blueprint ID to the request
+          blueprintId: selectedBlueprintId, // Add blueprint ID to the request
+          rating: rating // Add rating to the request
         }),
         mode: 'cors' // Explicitly set CORS mode
       });
@@ -395,8 +406,9 @@ const ProofGenerator = () => {
         setSubmissionStatus('submitted');
         setSubmissionSuccess(true);
 
-        // Clear the review text after successful submission
+        // Clear the review text and rating after successful submission
         setReviewText('');
+        setRating(0);
       } else {
         console.error('Review submission failed:', data.message);
         setSubmissionStatus('failed');
@@ -629,6 +641,18 @@ const ProofGenerator = () => {
 
               {/* Review submission form */}
               <div className="mt-4 space-y-3">
+                {/* Star Rating Input */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Rate this product
+                  </label>
+                  <StarRatingInput 
+                    value={rating} 
+                    onChange={setRating}
+                    disabled={submissionStatus === 'submitting' || submissionSuccess}
+                  />
+                </div>
+                
                 <label className="block text-sm font-medium text-gray-700">
                   Write Your Review
                 </label>

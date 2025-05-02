@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import StarRatingDisplay from './StarRatingDisplay';
 
 // Define API URL - now pointing to port 3002 for the backend
 const API_URL = 'http://localhost:3002/api';
@@ -12,6 +13,8 @@ type Review = {
   reviewText: string;
   isVerified: boolean;
   createdAt: string;
+  serviceName?: string;
+  rating?: number;
 };
 
 const ReviewList = () => {
@@ -113,9 +116,23 @@ const ReviewList = () => {
                   </span>
                 )}
               </div>
+              
+              {/* Display star rating if available */}
+              {review.rating && (
+                <div className="mb-2">
+                  <StarRatingDisplay rating={review.rating} className="text-lg" />
+                </div>
+              )}
+              
               <p className="text-gray-600 mb-3 whitespace-pre-line">{review.reviewText}</p>
-              <div className="text-xs text-gray-500">
-                Submitted on {formatDate(review.createdAt)}
+              
+              <div className="flex justify-between items-center text-xs text-gray-500">
+                <span>Submitted on {formatDate(review.createdAt)}</span>
+                {review.serviceName && (
+                  <span className="bg-gray-100 px-2 py-1 rounded">
+                    via {review.serviceName}
+                  </span>
+                )}
               </div>
             </div>
           ))}

@@ -19,6 +19,9 @@ const initializeDb = () => {
       reviewText TEXT NOT NULL,
       isVerified BOOLEAN NOT NULL DEFAULT true,
       emailNullifier TEXT UNIQUE NOT NULL, -- Ensure nullifier is unique
+      serviceName TEXT,
+      blueprintId TEXT,
+      rating INTEGER CHECK(rating >= 1 AND rating <= 5), -- Add rating column with constraint
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `;
