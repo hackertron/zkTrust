@@ -437,7 +437,7 @@ const ProofGenerator = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800 pb-2 border-b border-gray-200">
-        ZK Email Proof Generator
+        Purchase Verification Engine
       </h2>
 
       {/* Blueprint selector dropdown */}
