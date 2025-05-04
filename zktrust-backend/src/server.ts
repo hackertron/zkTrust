@@ -1,5 +1,5 @@
 import express from 'express';
-import type { Request, Response, RequestHandler } from 'express';
+import type { Request, Response, RequestHandler, NextFunction } from 'express';
 import cors from 'cors';
 import zkeSDK, { Proof } from '@zk-email/sdk';
 import db from './database'; // Make sure database import is present
@@ -27,27 +27,34 @@ interface PublicSignal {
 const app = express();
 const PORT = process.env.PORT || 3002;
 
-// --- CORRECTED CORS CONFIGURATION ---
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'zk-trust.vercel.app', 'https://zk-trust.vercel.app'];
-
-const corsOptions: cors.CorsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests) in development
-    // or requests from allowed origins
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma', 'X-Requested-With'], // Added Cache-Control and others
+// --- SIMPLIFIED CORS CONFIGURATION ---
+// Add your Vercel domain to allowed origins
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://zk-trust.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma', 'X-Requested-With'],
   credentials: true,
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+  optionsSuccessStatus: 200
 };
 
 // Apply CORS middleware globally
 app.use(cors(corsOptions));
+
+// Explicit CORS headers for more compatibility - with correct TypeScript signature
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.header('Access-Control-Allow-Origin', 'https://zk-trust.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Cache-Control, Pragma, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
 
 // --- END OF CORS CONFIGURATION ---
 
@@ -305,7 +312,7 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
   }
 };
 
-// API endpoint to get all reviews (REMOVED redundant CORS header)
+// API endpoint to get all reviews
 app.get('/api/reviews', (req: Request, res: Response) => {
   const sql = "SELECT id, productName, reviewText, isVerified, createdAt, serviceName, rating FROM reviews ORDER BY createdAt DESC";
   db.all(sql, [], (err, rows) => {
@@ -318,12 +325,7 @@ app.get('/api/reviews', (req: Request, res: Response) => {
   });
 });
 
-// Register specific OPTIONS routes for each endpoint instead of using wildcard
-app.options('/api/reviews', cors(corsOptions));
-app.options('/api/verify-gumroad-proof', cors(corsOptions));
-app.options('/api/submit-review', cors(corsOptions));
-
-// Register the route handlers
+// Register the route handlers - DO NOT need individual OPTIONS handlers anymore
 app.post('/api/verify-gumroad-proof', verifyGumroadProof); // Keep old endpoint for backwards compatibility
 app.post('/api/submit-review', submitReview); // New endpoint for review submission
 
