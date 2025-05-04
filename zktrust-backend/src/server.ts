@@ -16,6 +16,10 @@ interface SubmitReviewRequest {
   reviewText: string;
   blueprintId: string; // Added blueprintId field
   rating: number; // Added rating field
+  starknetVerification?: {
+    verified: boolean;
+    transactionHash: string;
+  };
 }
 
 // Define interface for the public signals
@@ -268,12 +272,17 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
           }
         }
         
+        // Check for Starknet verification
+        const starknetVerification = req.body.starknetVerification;
+        const isStarknetVerified = starknetVerification?.verified || false;
+        const starknetTxHash = starknetVerification?.transactionHash || null;
+        
         // --- Save to Database ---
         const insertSql = `
-          INSERT INTO reviews (productName, reviewText, isVerified, emailNullifier, serviceName, blueprintId, rating)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO reviews (productName, reviewText, isVerified, emailNullifier, serviceName, blueprintId, rating, starknetVerified, starknetTxHash)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        db.run(insertSql, [productName, reviewText, true, emailNullifier, serviceName, blueprintId, rating], function (insertErr) {
+        db.run(insertSql, [productName, reviewText, true, emailNullifier, serviceName, blueprintId, rating, isStarknetVerified, starknetTxHash], function (insertErr) {
           if (insertErr) {
             console.error('Database error during insert:', insertErr.message);
             // Handle potential race condition if nullifier was inserted between check and insert
@@ -307,7 +316,7 @@ const submitReview: RequestHandler = async (req: Request, res: Response) => {
 
 // API endpoint to get all reviews (REMOVED redundant CORS header)
 app.get('/api/reviews', (req: Request, res: Response) => {
-  const sql = "SELECT id, productName, reviewText, isVerified, createdAt, serviceName, rating FROM reviews ORDER BY createdAt DESC";
+  const sql = "SELECT id, productName, reviewText, isVerified, starknetVerified, starknetTxHash, createdAt, serviceName, rating FROM reviews ORDER BY createdAt DESC";
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.error("Error fetching reviews:", err.message);

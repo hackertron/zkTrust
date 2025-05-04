@@ -22,6 +22,8 @@ const initializeDb = () => {
       serviceName TEXT,
       blueprintId TEXT,
       rating INTEGER CHECK(rating >= 1 AND rating <= 5), -- Add rating column with constraint
+      starknetVerified BOOLEAN DEFAULT false, -- Add Starknet verification flag
+      starknetTxHash TEXT, -- Add Starknet transaction hash
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `;

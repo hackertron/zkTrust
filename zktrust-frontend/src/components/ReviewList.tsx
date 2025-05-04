@@ -12,6 +12,8 @@ type Review = {
   productName: string;
   reviewText: string;
   isVerified: boolean;
+  starknetVerified?: boolean;
+  starknetTxHash?: string;
   createdAt: string;
   serviceName?: string;
   rating?: number;
@@ -107,14 +109,27 @@ const ReviewList = () => {
             >
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-lg font-semibold text-gray-800">{review.productName}</h3>
-                {review.isVerified && (
-                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    Verified Purchase
-                  </span>
-                )}
+                <div className="flex space-x-2">
+                  {/* Starknet verification badge */}
+                  {review.starknetVerified && (
+                    <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Starknet Verified
+                    </span>
+                  )}
+                  
+                  {/* Regular verification badge */}
+                  {review.isVerified && !review.starknetVerified && (
+                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Verified Purchase
+                    </span>
+                  )}
+                </div>
               </div>
               
               {/* Display star rating if available */}
@@ -126,12 +141,21 @@ const ReviewList = () => {
               
               <p className="text-gray-600 mb-3 whitespace-pre-line">{review.reviewText}</p>
               
-              <div className="flex justify-between items-center text-xs text-gray-500">
-                <span>Submitted on {formatDate(review.createdAt)}</span>
-                {review.serviceName && (
-                  <span className="bg-gray-100 px-2 py-1 rounded">
-                    via {review.serviceName}
-                  </span>
+              <div className="flex flex-col space-y-1">
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>Submitted on {formatDate(review.createdAt)}</span>
+                  {review.serviceName && (
+                    <span className="bg-gray-100 px-2 py-1 rounded">
+                      via {review.serviceName}
+                    </span>
+                  )}
+                </div>
+                
+                {/* Show Starknet transaction hash if available */}
+                {review.starknetVerified && review.starknetTxHash && (
+                  <div className="text-xs text-indigo-600 bg-indigo-50 p-1 rounded font-mono overflow-hidden text-ellipsis">
+                    <span className="font-medium">Starknet TX:</span> {review.starknetTxHash}
+                  </div>
                 )}
               </div>
             </div>

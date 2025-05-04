@@ -3,12 +3,18 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import zkeSDK, { Proof } from '@zk-email/sdk';
 import StarRatingInput from './StarRatingInput';
+import StarknetVerifier from '@/utils/StarknetVerifier';
 
 // Define API URL - now pointing to port 3002 for the backend
 const API_URL = 'https://zktrust.onrender.com/api';
 
-// Define verification status type
-type VerificationStatus = 'idle' | 'verifying' | 'verified' | 'failed';
+// Default Starknet contract address - this should be updated after deployment
+// For development, we use a placeholder. In production, get this from environment
+const STARKNET_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_STARKNET_CONTRACT_ADDRESS || 
+  '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+
+// Define verification status type with Starknet verification
+type VerificationStatus = 'idle' | 'verifying' | 'verified' | 'starknet_verifying' | 'starknet_verified' | 'starknet_failed' | 'failed';
 
 // Define submission status type
 type SubmissionStatus = 'idle' | 'submitting' | 'submitted' | 'failed';
@@ -46,6 +52,11 @@ const ProofGenerator = () => {
   // New state variables for verification
   const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>('idle');
   const [verifiedProductName, setVerifiedProductName] = useState<string | null>(null);
+  
+  // New state for Starknet verification
+  const [starknetVerifier, setStarknetVerifier] = useState<StarknetVerifier | null>(null);
+  const [starknetTransactionHash, setStarknetTransactionHash] = useState<string | null>(null);
+  const [useStarknetVerification, setUseStarknetVerification] = useState<boolean>(false);
 
   // New state variables for review submission
   const [reviewText, setReviewText] = useState<string>('');
@@ -62,6 +73,13 @@ const ProofGenerator = () => {
 
   // File input reference
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Initialize Starknet verifier
+  useEffect(() => {
+    // Initialize the Starknet verifier
+    const verifier = new StarknetVerifier(STARKNET_CONTRACT_ADDRESS, 'testnet');
+    setStarknetVerifier(verifier);
+  }, []);
 
   // Automatically verify proof when it's generated
   useEffect(() => {
@@ -184,6 +202,7 @@ const ProofGenerator = () => {
       // Reset verification status when a new file is uploaded
       setVerificationStatus('idle');
       setVerifiedProductName(null);
+      setStarknetTransactionHash(null);
 
       // Reset submission status
       setSubmissionStatus('idle');
@@ -234,6 +253,7 @@ const ProofGenerator = () => {
     // Reset verification status when file is cleared
     setVerificationStatus('idle');
     setVerifiedProductName(null);
+    setStarknetTransactionHash(null);
     setProofResult(null);
 
     // Reset submission status
@@ -252,6 +272,7 @@ const ProofGenerator = () => {
     setProofResult(null);
     setVerificationStatus('idle');
     setVerifiedProductName(null);
+    setStarknetTransactionHash(null);
 
     // Reset submission status
     setSubmissionStatus('idle');
@@ -332,6 +353,12 @@ const ProofGenerator = () => {
         console.log('Proof verified successfully!');
         setVerificationStatus('verified');
         setVerifiedProductName(data.productName);
+        
+        // If Starknet verification is enabled, verify with Starknet
+        if (useStarknetVerification && starknetVerifier && data.productName) {
+          // Proceed with Starknet verification
+          await verifyWithStarknet(proof, data.productName);
+        }
       } else {
         console.error('Proof verification failed:', data.message);
         setVerificationStatus('failed');
@@ -342,6 +369,47 @@ const ProofGenerator = () => {
       console.error('Error during verification:', err);
       setVerificationStatus('failed');
       setError(`Verification error: ${err instanceof Error ? err.message : 'Unknown error - Possible CORS or connection issue'}`);
+    }
+  };
+  
+  // Function to verify the proof with Starknet
+  const verifyWithStarknet = async (proof: Proof, productName: string) => {
+    if (!starknetVerifier) {
+      console.error('Starknet verifier not initialized');
+      return;
+    }
+    
+    try {
+      setVerificationStatus('starknet_verifying');
+      
+      // Extract public inputs from the proof
+      // This assumes the public outputs are available in the proof object
+      const publicInputs = proof.props.publicOutputs || [];
+      
+      console.log('Verifying proof with Starknet...');
+      console.log('Public inputs:', publicInputs);
+      console.log('Product name:', productName);
+      
+      // Verify the proof with Starknet
+      const result = await starknetVerifier.verifyProof(
+        proof,
+        publicInputs,
+        productName
+      );
+      
+      console.log('Starknet verification result:', result);
+      
+      if (result.verified) {
+        setVerificationStatus('starknet_verified');
+        setStarknetTransactionHash(result.transactionHash || null);
+      } else {
+        setVerificationStatus('starknet_failed');
+        setError('Starknet verification failed. The proof is still valid, but not verified on-chain.');
+      }
+    } catch (err) {
+      console.error('Error during Starknet verification:', err);
+      setVerificationStatus('starknet_failed');
+      setError(`Starknet verification error: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
   };
 
@@ -381,6 +449,12 @@ const ProofGenerator = () => {
       const proofToSubmit = { ...proofResult };
       console.log('Final structured proof being sent:', JSON.stringify(proofToSubmit, null, 2));
 
+      // Add Starknet verification data if available
+      const starknetVerification = starknetTransactionHash ? {
+        verified: verificationStatus === 'starknet_verified',
+        transactionHash: starknetTransactionHash
+      } : undefined;
+
       const response = await fetch(`${API_URL}/submit-review`, {
         method: 'POST',
         headers: {
@@ -392,7 +466,8 @@ const ProofGenerator = () => {
           proofObject: proofToSubmit,
           reviewText: reviewText.trim(),
           blueprintId: selectedBlueprintId, // Add blueprint ID to the request
-          rating: rating // Add rating to the request
+          rating: rating, // Add rating to the request
+          starknetVerification // Add Starknet verification data if available
         }),
         mode: 'cors' // Explicitly set CORS mode
       });
@@ -450,7 +525,7 @@ const ProofGenerator = () => {
           value={selectedBlueprintId}
           onChange={(e) => setSelectedBlueprintId(e.target.value)}
           className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          disabled={isLoading || verificationStatus === 'verifying' || submissionStatus === 'submitting'}
+          disabled={isLoading || verificationStatus === 'verifying' || verificationStatus === 'starknet_verifying' || submissionStatus === 'submitting'}
         >
           {supportedBlueprints.map((bp) => (
             <option key={bp.id} value={bp.id}>
@@ -458,6 +533,21 @@ const ProofGenerator = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Starknet Verification Toggle */}
+      <div className="flex items-center mb-4">
+        <input
+          id="starknetToggle"
+          type="checkbox"
+          checked={useStarknetVerification}
+          onChange={(e) => setUseStarknetVerification(e.target.checked)}
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          disabled={isLoading || verificationStatus === 'verifying' || verificationStatus === 'starknet_verifying' || submissionStatus === 'submitting'}
+        />
+        <label htmlFor="starknetToggle" className="ml-2 block text-sm text-gray-700">
+          Use Starknet enhanced verification (beta)
+        </label>
       </div>
 
       <div className="space-y-3">
@@ -505,7 +595,7 @@ const ProofGenerator = () => {
                 <button
                   onClick={(e) => { e.stopPropagation(); handleClearFile(); }}
                   className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
-                  disabled={isLoading || verificationStatus === 'verifying' || submissionStatus === 'submitting'}
+                  disabled={isLoading || verificationStatus === 'verifying' || verificationStatus === 'starknet_verifying' || submissionStatus === 'submitting'}
                 >
                   Clear File
                 </button>
@@ -545,7 +635,7 @@ const ProofGenerator = () => {
                      hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
                      focus:ring-blue-500 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleGenerateProof}
-          disabled={isLoading || !emailContent.trim() || verificationStatus === 'verifying' || submissionStatus === 'submitting'}
+          disabled={isLoading || !emailContent.trim() || verificationStatus === 'verifying' || verificationStatus === 'starknet_verifying' || submissionStatus === 'submitting'}
         >
           {isLoading ? (
             <>
@@ -623,21 +713,70 @@ const ProofGenerator = () => {
           </div>
         </div>
       )}
-
-      {verificationStatus === 'verified' && !submissionSuccess && (
-        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md shadow-sm">
+      
+      {/* Starknet Verification status display */}
+      {verificationStatus === 'starknet_verifying' && (
+        <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-md shadow-sm animate-pulse">
           <div className="flex items-start">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-500 mr-3 flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500 mr-3 flex-shrink-0">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div>
+              <h3 className="text-lg font-medium text-purple-800">Enhanced verification in progress...</h3>
+              <p className="mt-1 text-sm text-purple-600">
+                Verifying proof with Starknet blockchain for enhanced security.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(verificationStatus === 'verified' || verificationStatus === 'starknet_verified' || verificationStatus === 'starknet_failed') && !submissionSuccess && (
+        <div className={`mt-6 p-4 ${verificationStatus === 'starknet_verified' ? 'bg-indigo-50 border-indigo-200' : 'bg-green-50 border-green-200'} border rounded-md shadow-sm`}>
+          <div className="flex items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${verificationStatus === 'starknet_verified' ? 'text-indigo-500' : 'text-green-500'} mr-3 flex-shrink-0`}>
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
             <div className="w-full">
-              <h3 className="text-lg font-medium text-green-800">Purchase Verified!</h3>
-              <p className="mt-1 text-sm text-green-600 mb-4">
+              <div className="flex items-center justify-between">
+                <h3 className={`text-lg font-medium ${verificationStatus === 'starknet_verified' ? 'text-indigo-800' : 'text-green-800'}`}>
+                  Purchase Verified!
+                </h3>
+                
+                {/* Starknet badge */}
+                {verificationStatus === 'starknet_verified' && (
+                  <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Starknet Verified
+                  </span>
+                )}
+              </div>
+              
+              <p className={`mt-1 text-sm ${verificationStatus === 'starknet_verified' ? 'text-indigo-600' : 'text-green-600'} mb-2`}>
                 {verifiedProductName ?
                   `Proof verified for purchase: ${verifiedProductName}` :
                   'Your purchase has been cryptographically verified.'}
               </p>
+              
+              {/* Starknet transaction hash */}
+              {starknetTransactionHash && (
+                <div className="mb-3 bg-indigo-50 p-2 rounded text-xs text-indigo-700 font-mono overflow-auto">
+                  <span className="font-semibold">Starknet Tx:</span> {starknetTransactionHash}
+                </div>
+              )}
+              
+              {/* Starknet verification failed message */}
+              {verificationStatus === 'starknet_failed' && (
+                <div className="mb-3 bg-yellow-50 p-2 rounded text-sm text-yellow-700">
+                  <p className="font-medium">Note: Starknet verification failed, but the regular verification was successful.</p>
+                  <p className="text-xs mt-1">This does not affect the validity of your review. The review will be submitted with regular verification.</p>
+                </div>
+              )}
 
               {/* Review submission form */}
               <div className="mt-4 space-y-3">
@@ -667,10 +806,10 @@ const ProofGenerator = () => {
 
                 <div className="flex justify-end">
                   <button
-                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent 
-                              text-sm font-medium rounded-md shadow-sm bg-green-600 text-white 
-                              hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
-                              focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`inline-flex items-center justify-center px-4 py-2 border border-transparent 
+                              text-sm font-medium rounded-md shadow-sm ${verificationStatus === 'starknet_verified' ? 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500' : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'} text-white 
+                              focus:outline-none focus:ring-2 focus:ring-offset-2 
+                              disabled:opacity-50 disabled:cursor-not-allowed`}
                     onClick={handleSubmitReview}
                     disabled={submissionStatus === 'submitting' || !reviewText.trim() || submissionSuccess}
                   >
@@ -711,6 +850,11 @@ const ProofGenerator = () => {
               <p className="mt-1 text-sm text-green-600">
                 Your verified review has been posted. Thank you for your feedback!
               </p>
+              {verificationStatus === 'starknet_verified' && (
+                <p className="mt-1 text-xs text-green-600">
+                  Your review includes enhanced verification with Starknet blockchain technology.
+                </p>
+              )}
             </div>
           </div>
         </div>
