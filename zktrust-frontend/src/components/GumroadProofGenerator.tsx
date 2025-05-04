@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import zkeSDK, { Proof } from '@zk-email/sdk';
 
 // Define API URL - now pointing to port 3002 for the backend
-const API_URL = 'http://localhost:3002/api';
+const API_URL = 'https://zktrust.onrender.com/api';
 
 // Define verification status type
 type VerificationStatus = 'idle' | 'verifying' | 'verified' | 'failed';

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import StarRatingDisplay from './StarRatingDisplay';
 
 // Define API URL - now pointing to port 3002 for the backend
-const API_URL = 'http://localhost:3002/api';
+const API_URL = 'https://zktrust.onrender.com/api';
 
 // Define Review type
 type Review = {
