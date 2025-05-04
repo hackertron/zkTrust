@@ -28,7 +28,7 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 
 // --- CORRECTED CORS CONFIGURATION ---
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'zk-trust.vercel.app/', 'https://zk-trust.vercel.app/'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'zk-trust.vercel.app', 'https://zk-trust.vercel.app'];
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
