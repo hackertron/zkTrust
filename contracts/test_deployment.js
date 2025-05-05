@@ -36,7 +36,7 @@ async function main() {
     try {
       const balance = await provider.getBalance(accountAddress);
       console.log('Account balance:', balance);
-      
+
       if (BigInt(balance.balance) === 0n) {
         console.warn('Warning: Account balance is zero. You need funds to deploy contracts.');
         console.warn('You can get testnet tokens from the Starknet Sepolia faucet.');
@@ -47,7 +47,7 @@ async function main() {
 
     console.log('Account setup successful. Ready to deploy contract.');
     console.log('Account address:', accountAddress);
-    
+
     // Actual deployment would be done using the deploy.js script
     console.log('\nTo deploy the contract, run:');
     console.log('  node deploy.js');
