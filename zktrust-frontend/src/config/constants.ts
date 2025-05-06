@@ -3,8 +3,8 @@
  */
 
 // API URL - Change this in one place to update throughout the application
-//export const API_URL = 'https://zktrust.onrender.com/api';
-export const API_URL = 'http://localhost:3002/api';
+export const API_URL = 'https://zktrust.onrender.com/api';
+//export const API_URL = 'http://localhost:3002/api';
 // Base Sepolia Chain ID
 export const BASE_SEPOLIA_CHAIN_ID = 84532;
 
