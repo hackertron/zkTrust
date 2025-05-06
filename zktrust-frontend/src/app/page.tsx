@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 // Import the ProofGenerator component with client-side rendering only
 // This is necessary because the ZK Email SDK uses browser-specific APIs
@@ -30,6 +31,15 @@ export default function Home() {
             without exposing sensitive data. Experience absolute authenticity where every review is cryptographically 
             guaranteed - the future of trusted commerce is here.
           </p>
+          
+          {/* New Base Blockchain Banner */}
+          <div className="mt-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-6 text-white shadow-lg mx-auto max-w-2xl">
+            <h3 className="text-xl font-bold mb-2">✨ New: ZKTrust on Base Blockchain!</h3>
+            <p className="mb-4">Experience our next-generation platform with full blockchain integration.</p>
+            <Link href="/blockchain" className="inline-block px-6 py-3 bg-white text-blue-600 rounded-md font-semibold hover:bg-blue-50 transition-colors shadow-md">
+              Try ZKTrust on Base →
+            </Link>
+          </div>
         </header>
         
         <div className="card fadeIn mb-16">

@@ -1,0 +1,41 @@
+{
+  "name": "zktrust-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for ZKTrust decentralized review platform on Base",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy:local": "hardhat deploy --network hardhat",
+    "deploy:base-sepolia": "hardhat deploy --network base_sepolia",
+    "test:coverage": "hardhat coverage",
+    "node": "hardhat node",
+    "solhint": "solhint 'contracts/**/*.sol'",
+    "generate-types": "hardhat typechain",
+    "add-operator": "hardhat run scripts/add-operator.js --network base_sepolia",
+    "update-frontend": "node scripts/update-frontend-addresses.js",
+    "deploy:decentralized": "npx hardhat run scripts/deploy-decentralized.js --network base_sepolia"
+  },
+  "keywords": [
+    "blockchain",
+    "smart-contracts",
+    "base",
+    "ethereum",
+    "zk",
+    "zero-knowledge",
+    "reviews"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.5.0",
+    "ethers": "^6.13.7",
+    "hardhat": "^2.23.0",
+    "hardhat-deploy": "^1.0.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0"
+  }
+}

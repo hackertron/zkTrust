@@ -1,10 +1,15 @@
-# ZK Review Frontend
+# ZKTrust Frontend
 
-This is a frontend application for a decentralized review platform that uses ZK Email to verify that reviewers had actual interactions with businesses. 
+This is the frontend application for the ZKTrust decentralized review platform that uses ZK Email to verify that reviewers had actual interactions with businesses. The frontend now supports both traditional API-based verification and full blockchain integration with Base.
 
 ## Project Overview
 
-The application allows users to paste the raw content of a Gumroad purchase confirmation email and generate a ZK proof using the deployed Blueprint SDK. This proof cryptographically verifies that the user received a valid email from the Gumroad domain without revealing the sensitive content of the email.
+The application allows users to:
+1. Paste the raw content of a purchase confirmation email
+2. Generate a ZK proof using the deployed Blueprint SDK
+3. Verify the proof either via API or on the Base blockchain
+4. Submit verified reviews and store them securely
+5. Browse verified reviews with cryptographic guarantees
 
 ## Getting Started
 
@@ -12,6 +17,7 @@ The application allows users to paste the raw content of a Gumroad purchase conf
 
 - Node.js (v18 or higher recommended)
 - NPM or Yarn
+- MetaMask (for blockchain functionality)
 
 ### Installation
 
@@ -35,26 +41,60 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Usage
+## Blockchain Integration
 
-1. Obtain a raw Gumroad purchase confirmation email (save as .eml or view source in your email client)
-2. Copy the entire raw email content
-3. Paste the content into the textarea on the application
-4. Click the "Generate Gumroad Proof" button
-5. Wait for the proof generation to complete (this may take 30 seconds to a few minutes)
-6. The generated proof will be displayed on the page
+The application now supports full integration with the Base blockchain, allowing for:
+
+1. **On-chain verification**: Proofs are verified directly on the Base blockchain for maximum transparency
+2. **On-chain storage**: Reviews are stored permanently on the blockchain
+3. **Decentralized access**: The platform becomes truly decentralized with no central point of failure
+
+### Using the Blockchain Features
+
+1. Connect your MetaMask wallet to the Base Sepolia testnet
+2. Visit the `/blockchain` route or click on "Try ZKTrust on Base" on the homepage
+3. Generate proofs and submit reviews directly on-chain
+
+### Required MetaMask Setup
+
+1. Add Base Sepolia testnet to MetaMask:
+   - Network Name: Base Sepolia Testnet
+   - RPC URL: https://sepolia.base.org
+   - Chain ID: 84532
+   - Currency Symbol: ETH
+   - Block Explorer URL: https://sepolia.basescan.org
+
+2. Get Base Sepolia testnet ETH from the [Base Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
 
 ## Technical Details
 
 - Built with Next.js and React
 - Uses the ZK Email SDK (@zk-email/sdk) for proof generation
+- Uses ethers.js for blockchain integration
+- Supports both traditional backend and blockchain verification/storage
 - The proof generation happens entirely client-side using WebAssembly
-- The blueprint used is `hackertron/gumroad_purchase_proof` which is configured to:
-  - Verify DKIM signatures from customers.gumroad.com
-  - Skip the email body hash check
-  - Extract the Subject line from the email header as a public output
+
+## Architecture
+
+```
+src/
+├── app/               # Next.js app router pages
+│   ├── blockchain/    # Blockchain-enabled version of the app
+│   └── page.tsx       # Standard version home page
+├── components/        # React components
+│   ├── wallet/        # Wallet connection components
+│   ├── blockchain/    # Blockchain-specific components
+│   └── ...            # Other components
+├── context/           # React contexts
+│   └── Web3Context.tsx # Blockchain context provider
+├── hooks/             # Custom React hooks
+│   ├── useReviewRegistry.ts # Contract interaction hooks
+│   └── useVerification.ts  # ZK proof verification hooks
+└── abi/               # Contract ABIs for blockchain integration
+```
 
 ## Notes
 
 - Proof generation is computationally intensive and can take 30 seconds to a few minutes in the browser
-- This is Phase 1 of the project, focusing only on proof generation. Verification and review submission will be part of future phases.
+- The blockchain-enabled version is currently deployed to the Base Sepolia testnet
+- For production, the contracts would be deployed to Base mainnet
