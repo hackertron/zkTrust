@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import dynamic from 'next/dynamic';
-
+import { Analytics } from "@vercel/analytics/react"
 // Import the Navbar component with client-side rendering
 const Navbar = dynamic(
   () => import('@/components/Navbar'),
@@ -25,6 +25,7 @@ export default function RootLayout({
         <div className="pt-16">
           {children}
         </div>
+        <Analytics />
       </body>
     </html>
   );
