@@ -1,0 +1,899 @@
+{
+  "address": "0xc299EcE89b45f7944D346884EA8115E3608C18dF",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_storage",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "productId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "manufacturer",
+          "type": "string"
+        }
+      ],
+      "name": "ProductRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "reviewId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "productId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "reviewer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "rating",
+          "type": "uint8"
+        }
+      ],
+      "name": "ReviewSubmitted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "domain",
+          "type": "string"
+        }
+      ],
+      "name": "ServiceAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "ServiceRemoved",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newStorageAddress",
+          "type": "address"
+        }
+      ],
+      "name": "StorageContractUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "domain",
+          "type": "string"
+        }
+      ],
+      "name": "addService",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "productId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getProduct",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "manufacturer",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "averageRating",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reviewCount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "reviewerAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getReviewer",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "reputation",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reviewCount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "nullifier",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isNullifierUsed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "isUsed",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "isServiceSupported",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "productCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "products",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "manufacturer",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalRating",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reviewCount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "productId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "manufacturer",
+          "type": "string"
+        }
+      ],
+      "name": "registerProduct",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "removeService",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "reviewers",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "addr",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reputation",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reviewCount",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "services",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "domain",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "isSupported",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "storageContract",
+      "outputs": [
+        {
+          "internalType": "contract ReviewStorage",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "nullifier",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "productId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        },
+        {
+          "internalType": "uint8",
+          "name": "rating",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "serviceName",
+          "type": "string"
+        }
+      ],
+      "name": "submitReview",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "storageAddr",
+          "type": "address"
+        }
+      ],
+      "name": "updateStorageContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x836df89de20e823b5c7cd3fd49c48fbfa5d418d73c67fb4bd5dce50aaf176ade",
+  "receipt": {
+    "to": null,
+    "from": "0x53e7eD571fdBA153040c9aAD925203f191ebcaAd",
+    "contractAddress": "0xc299EcE89b45f7944D346884EA8115E3608C18dF",
+    "transactionIndex": 2,
+    "gasUsed": "1431752",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000800000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000020000000100000000000800000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000020000000000000401000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x4ac2f3cf11bdc561195fb39660f9e879ffa06a641fd6ce4c0d76f5dbf7bf2a34",
+    "transactionHash": "0x836df89de20e823b5c7cd3fd49c48fbfa5d418d73c67fb4bd5dce50aaf176ade",
+    "logs": [
+      {
+        "transactionIndex": 2,
+        "blockNumber": 25374741,
+        "transactionHash": "0x836df89de20e823b5c7cd3fd49c48fbfa5d418d73c67fb4bd5dce50aaf176ade",
+        "address": "0xc299EcE89b45f7944D346884EA8115E3608C18dF",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x00000000000000000000000053e7ed571fdba153040c9aad925203f191ebcaad"
+        ],
+        "data": "0x",
+        "logIndex": 3,
+        "blockHash": "0x4ac2f3cf11bdc561195fb39660f9e879ffa06a641fd6ce4c0d76f5dbf7bf2a34"
+      }
+    ],
+    "blockNumber": 25374741,
+    "cumulativeGasUsed": "1545125",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x9F010B5CBb173514F3e53F44362D39359DC3Fa47"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "a0632cd0c1a0c4f092450a1089796c1c",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_storage\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"productId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"manufacturer\",\"type\":\"string\"}],\"name\":\"ProductRegistered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"reviewId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"productId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"reviewer\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"rating\",\"type\":\"uint8\"}],\"name\":\"ReviewSubmitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"}],\"name\":\"ServiceAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"ServiceRemoved\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newStorageAddress\",\"type\":\"address\"}],\"name\":\"StorageContractUpdated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"}],\"name\":\"addService\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"productId\",\"type\":\"bytes32\"}],\"name\":\"getProduct\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"manufacturer\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"averageRating\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reviewCount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"reviewerAddress\",\"type\":\"address\"}],\"name\":\"getReviewer\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"reputation\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reviewCount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"nullifier\",\"type\":\"bytes32\"}],\"name\":\"isNullifierUsed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"isUsed\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"isServiceSupported\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"productCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"products\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"id\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"manufacturer\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"totalRating\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reviewCount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"productId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"manufacturer\",\"type\":\"string\"}],\"name\":\"registerProduct\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"}],\"name\":\"removeService\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"reviewers\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"reputation\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"reviewCount\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"services\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"domain\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"isSupported\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"storageContract\",\"outputs\":[{\"internalType\":\"contract ReviewStorage\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"nullifier\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"productId\",\"type\":\"bytes32\"},{\"internalType\":\"string\",\"name\":\"content\",\"type\":\"string\"},{\"internalType\":\"uint8\",\"name\":\"rating\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"serviceName\",\"type\":\"string\"}],\"name\":\"submitReview\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"storageAddr\",\"type\":\"address\"}],\"name\":\"updateStorageContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Assumes cryptographic proof was verified on-chain via SDK *before* calling submitReview.      Relies on ReviewStorage contract to check nullifier uniqueness. Ownable for admin functions.\",\"errors\":{\"OwnableInvalidOwner(address)\":[{\"details\":\"The owner is not a valid owner account. (eg. `address(0)`)\"}],\"OwnableUnauthorizedAccount(address)\":[{\"details\":\"The caller account is not authorized to perform an operation.\"}]},\"kind\":\"dev\",\"methods\":{\"addService(string,string)\":{\"details\":\"Adds a new supported service - only owner.\",\"params\":{\"domain\":\"Service domain.\",\"name\":\"Service name (used as key).\"}},\"constructor\":{\"details\":\"Constructor sets the initial owner and the essential storage contract address.\",\"params\":{\"_storage\":\"Address of the deployed ReviewStorage contract.\"}},\"getProduct(bytes32)\":{\"details\":\"Gets product information including average rating.\",\"params\":{\"productId\":\"ID of the product.\"},\"returns\":{\"averageRating\":\"Average rating (0 if no reviews).\",\"manufacturer\":\"Product manufacturer.\",\"name\":\"Product name.\",\"reviewCount\":\"Number of reviews.\"}},\"getReviewer(address)\":{\"details\":\"Gets reviewer information.\",\"params\":{\"reviewerAddress\":\"Address of the reviewer.\"},\"returns\":{\"reputation\":\"Reviewer's reputation score.\",\"reviewCount\":\"Number of reviews submitted by the reviewer.\"}},\"isNullifierUsed(bytes32)\":{\"details\":\"Public view function to check nullifier status by querying the storage contract.\",\"params\":{\"nullifier\":\"The nullifier to check.\"},\"returns\":{\"isUsed\":\"Whether the nullifier has been used in storage.\"}},\"isServiceSupported(string)\":{\"details\":\"Checks if a service is currently marked as supported.\",\"params\":{\"name\":\"Name of the service to check.\"},\"returns\":{\"_0\":\"True if the service is supported, false otherwise.\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"registerProduct(bytes32,string,string)\":{\"details\":\"Registers a new product. Can be called by anyone.      If a product gets its first review via submitReview before being registered,      it will be auto-registered with default details.\",\"params\":{\"manufacturer\":\"Product manufacturer.\",\"name\":\"Product name.\",\"productId\":\"Unique identifier for the product.\"}},\"removeService(string)\":{\"details\":\"Removes a service from the supported list (marks as unsupported) - only owner.\",\"params\":{\"name\":\"Name of the service to remove.\"}},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"submitReview(bytes32,bytes32,string,uint8,string)\":{\"details\":\"Submits review data after proof has been verified via SDK.\",\"params\":{\"content\":\"Review text content.\",\"nullifier\":\"Unique identifier to prevent duplicate reviews (checked by storage contract).\",\"productId\":\"ID of the product being reviewed.\",\"rating\":\"Numerical rating (1-5).\",\"serviceName\":\"Name of the service (e.g., \\\"Gumroad\\\").\"},\"returns\":{\"_0\":\"The ID of the new review stored in ReviewStorage.\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"},\"updateStorageContract(address)\":{\"details\":\"Updates the storage contract address - only owner.\",\"params\":{\"storageAddr\":\"New storage contract address.\"}}},\"title\":\"ReviewRegistry\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"submitReview(bytes32,bytes32,string,uint8,string)\":{\"notice\":\"Requires proof to be verified on-chain using the SDK *before* this call.\"}},\"notice\":\"Manages product/reviewer/service registries and orchestrates review submissions.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ReviewRegistry.sol\":\"ReviewRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (access/Ownable.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {Context} from \\\"../utils/Context.sol\\\";\\n\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * The initial owner is set to the address provided by the deployer. This can\\n * later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    /**\\n     * @dev The caller account is not authorized to perform an operation.\\n     */\\n    error OwnableUnauthorizedAccount(address account);\\n\\n    /**\\n     * @dev The owner is not a valid owner account. (eg. `address(0)`)\\n     */\\n    error OwnableInvalidOwner(address owner);\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the address provided by the deployer as the initial owner.\\n     */\\n    constructor(address initialOwner) {\\n        if (initialOwner == address(0)) {\\n            revert OwnableInvalidOwner(address(0));\\n        }\\n        _transferOwnership(initialOwner);\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        _checkOwner();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view virtual returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if the sender is not the owner.\\n     */\\n    function _checkOwner() internal view virtual {\\n        if (owner() != _msgSender()) {\\n            revert OwnableUnauthorizedAccount(_msgSender());\\n        }\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby disabling any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        _transferOwnership(address(0));\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        if (newOwner == address(0)) {\\n            revert OwnableInvalidOwner(address(0));\\n        }\\n        _transferOwnership(newOwner);\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Internal function without access restriction.\\n     */\\n    function _transferOwnership(address newOwner) internal virtual {\\n        address oldOwner = _owner;\\n        _owner = newOwner;\\n        emit OwnershipTransferred(oldOwner, newOwner);\\n    }\\n}\\n\",\"keccak256\":\"0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n\\n    function _contextSuffixLength() internal view virtual returns (uint256) {\\n        return 0;\\n    }\\n}\\n\",\"keccak256\":\"0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2\",\"license\":\"MIT\"},\"contracts/ReviewRegistry.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.20;\\n\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\nimport \\\"./ReviewStorage.sol\\\"; // Import the updated ReviewStorage\\n\\n/**\\n * @title ReviewRegistry\\n * @notice Manages product/reviewer/service registries and orchestrates review submissions.\\n * @dev Assumes cryptographic proof was verified on-chain via SDK *before* calling submitReview.\\n *      Relies on ReviewStorage contract to check nullifier uniqueness. Ownable for admin functions.\\n */\\ncontract ReviewRegistry is Ownable {\\n    // Address of the ReviewStorage contract\\n    ReviewStorage public storageContract;\\n\\n    // Counter for total registered products\\n    uint256 public productCount;\\n\\n    // Struct definitions\\n    struct Product {\\n        bytes32 id; // Unique ID (e.g., hash of identifier)\\n        string name; // Product name\\n        string manufacturer; // Product manufacturer\\n        uint256 totalRating; // Sum of all ratings\\n        uint256 reviewCount; // Number of reviews received\\n    }\\n\\n    struct Reviewer {\\n        address addr; // Reviewer's wallet address\\n        uint256 reputation; // Simple reputation score\\n        uint256 reviewCount; // Number of reviews submitted\\n    }\\n\\n    struct Service {\\n        string name; // Name of the service (e.g., \\\"Gumroad\\\", \\\"Luma\\\")\\n        string domain; // Associated domain for the service\\n        bool isSupported; // Flag if service is currently supported (owner-managed)\\n    }\\n\\n    // Mappings\\n    mapping(bytes32 => Product) public products;\\n    mapping(address => Reviewer) public reviewers;\\n    mapping(string => Service) public services; // Maps service name to Service struct\\n\\n    // Events\\n    event ProductRegistered(\\n        bytes32 indexed productId,\\n        string name,\\n        string manufacturer\\n    );\\n    event ServiceAdded(string name, string domain);\\n    event ServiceRemoved(string name);\\n    event StorageContractUpdated(address newStorageAddress); // Renamed event\\n    event ReviewSubmitted(\\n        uint256 indexed reviewId,\\n        bytes32 indexed productId,\\n        address indexed reviewer,\\n        uint8 rating\\n    );\\n\\n    /**\\n     * @dev Constructor sets the initial owner and the essential storage contract address.\\n     * @param _storage Address of the deployed ReviewStorage contract.\\n     */\\n    constructor(address _storage) Ownable(msg.sender) {\\n        require(_storage != address(0), \\\"Invalid storage address\\\");\\n        storageContract = ReviewStorage(_storage);\\n    }\\n\\n    /**\\n     * @dev Registers a new product. Can be called by anyone.\\n     *      If a product gets its first review via submitReview before being registered,\\n     *      it will be auto-registered with default details.\\n     * @param productId Unique identifier for the product.\\n     * @param name Product name.\\n     * @param manufacturer Product manufacturer.\\n     */\\n    function registerProduct(\\n        bytes32 productId,\\n        string calldata name,\\n        string calldata manufacturer\\n    ) external {\\n        require(\\n            products[productId].id == bytes32(0),\\n            \\\"Product already registered\\\"\\n        );\\n\\n        productCount++;\\n        products[productId] = Product({\\n            id: productId,\\n            name: name,\\n            manufacturer: manufacturer,\\n            totalRating: 0,\\n            reviewCount: 0\\n        });\\n\\n        emit ProductRegistered(productId, name, manufacturer);\\n    }\\n\\n    /**\\n     * @dev Gets product information including average rating.\\n     * @param productId ID of the product.\\n     * @return name Product name.\\n     * @return manufacturer Product manufacturer.\\n     * @return averageRating Average rating (0 if no reviews).\\n     * @return reviewCount Number of reviews.\\n     */\\n    function getProduct(\\n        bytes32 productId\\n    )\\n        external\\n        view\\n        returns (\\n            string memory name,\\n            string memory manufacturer,\\n            uint256 averageRating,\\n            uint256 reviewCount\\n        )\\n    {\\n        Product storage product = products[productId];\\n        if (product.id == bytes32(0)) {\\n            // Return defaults if product not explicitly or implicitly registered\\n            return (\\\"Unknown Product\\\", \\\"Unknown Manufacturer\\\", 0, 0);\\n        }\\n\\n        uint256 avgRating = 0;\\n        if (product.reviewCount > 0) {\\n            avgRating = product.totalRating / product.reviewCount;\\n        }\\n        return (\\n            product.name,\\n            product.manufacturer,\\n            avgRating,\\n            product.reviewCount\\n        );\\n    }\\n\\n    /**\\n     * @dev Gets reviewer information.\\n     * @param reviewerAddress Address of the reviewer.\\n     * @return reputation Reviewer's reputation score.\\n     * @return reviewCount Number of reviews submitted by the reviewer.\\n     */\\n    function getReviewer(\\n        address reviewerAddress\\n    ) external view returns (uint256 reputation, uint256 reviewCount) {\\n        Reviewer storage reviewer = reviewers[reviewerAddress];\\n        // Returns (0, 0) if reviewer not found, which is the default struct state\\n        return (reviewer.reputation, reviewer.reviewCount);\\n    }\\n\\n    /**\\n     * @dev Adds a new supported service - only owner.\\n     * @param name Service name (used as key).\\n     * @param domain Service domain.\\n     */\\n    function addService(\\n        string calldata name,\\n        string calldata domain\\n    ) external onlyOwner {\\n        require(bytes(name).length > 0, \\\"Name cannot be empty\\\");\\n        require(bytes(domain).length > 0, \\\"Domain cannot be empty\\\");\\n        require(!services[name].isSupported, \\\"Service already supported\\\");\\n\\n        services[name] = Service({\\n            name: name,\\n            domain: domain,\\n            isSupported: true\\n        });\\n\\n        emit ServiceAdded(name, domain);\\n    }\\n\\n    /**\\n     * @dev Removes a service from the supported list (marks as unsupported) - only owner.\\n     * @param name Name of the service to remove.\\n     */\\n    function removeService(string calldata name) external onlyOwner {\\n        require(services[name].isSupported, \\\"Service not supported\\\");\\n        services[name].isSupported = false;\\n        emit ServiceRemoved(name);\\n    }\\n\\n    /**\\n     * @dev Checks if a service is currently marked as supported.\\n     * @param name Name of the service to check.\\n     * @return True if the service is supported, false otherwise.\\n     */\\n    function isServiceSupported(\\n        string calldata name\\n    ) external view returns (bool) {\\n        return services[name].isSupported;\\n    }\\n\\n    /**\\n     * @dev Updates the storage contract address - only owner.\\n     * @param storageAddr New storage contract address.\\n     */\\n    function updateStorageContract(address storageAddr) external onlyOwner {\\n        // Renamed function\\n        require(storageAddr != address(0), \\\"Invalid storage address\\\");\\n        storageContract = ReviewStorage(storageAddr);\\n        emit StorageContractUpdated(storageAddr); // Renamed event\\n    }\\n\\n    /**\\n     * @dev Submits review data after proof has been verified via SDK.\\n     * @notice Requires proof to be verified on-chain using the SDK *before* this call.\\n     * @param nullifier Unique identifier to prevent duplicate reviews (checked by storage contract).\\n     * @param productId ID of the product being reviewed.\\n     * @param content Review text content.\\n     * @param rating Numerical rating (1-5).\\n     * @param serviceName Name of the service (e.g., \\\"Gumroad\\\").\\n     * @return The ID of the new review stored in ReviewStorage.\\n     */\\n    function submitReview(\\n        bytes32 nullifier,\\n        bytes32 productId,\\n        string calldata content,\\n        uint8 rating,\\n        string calldata serviceName\\n    ) external returns (uint256) {\\n        // Step 1: Cryptographic verification is assumed to be completed via SDK before this call.\\n\\n        // Step 2: Add the review to storage, passing the original user's address (msg.sender)\\n        // The storage contract will perform the nullifier check.\\n        uint256 reviewId = storageContract.addReview(\\n            productId,\\n            msg.sender, // Pass the original caller's address\\n            content,\\n            rating,\\n            nullifier,\\n            serviceName\\n        );\\n\\n        // Step 3: Update product statistics. Auto-register if product is new.\\n        Product storage product = products[productId];\\n        if (product.id == bytes32(0)) {\\n            // Product doesn't exist, auto-register it\\n            productCount++;\\n            products[productId] = Product({\\n                id: productId,\\n                name: \\\"Unknown Product\\\", // Default name, can be updated later if needed\\n                manufacturer: \\\"Unknown Manufacturer\\\", // Default manufacturer\\n                totalRating: rating,\\n                reviewCount: 1\\n            });\\n            // Optional: Emit ProductRegistered here if needed for off-chain listeners\\n            // emit ProductRegistered(productId, \\\"Unknown Product\\\", \\\"Unknown Manufacturer\\\");\\n        } else {\\n            // Product exists, update stats\\n            product.totalRating += rating;\\n            product.reviewCount += 1;\\n        }\\n\\n        // Step 4: Update reviewer statistics\\n        Reviewer storage reviewer = reviewers[msg.sender];\\n        if (reviewer.addr == address(0)) {\\n            // First review from this address\\n            reviewer.addr = msg.sender;\\n            reviewer.reviewCount = 1;\\n            reviewer.reputation = 1; // Start reputation\\n        } else {\\n            // Existing reviewer\\n            reviewer.reviewCount += 1;\\n            reviewer.reputation += 1; // Simple reputation increment, can be made more complex\\n        }\\n\\n        // Step 5: Emit event for successful submission\\n        emit ReviewSubmitted(reviewId, productId, msg.sender, rating);\\n\\n        return reviewId;\\n    }\\n\\n    /**\\n     * @dev Public view function to check nullifier status by querying the storage contract.\\n     * @param nullifier The nullifier to check.\\n     * @return isUsed Whether the nullifier has been used in storage.\\n     */\\n    function isNullifierUsed(\\n        bytes32 nullifier\\n    ) external view returns (bool isUsed) {\\n        // Delegate the check to the storage contract's public mapping\\n        return storageContract.usedNullifiers(nullifier);\\n    }\\n}\\n\",\"keccak256\":\"0xd02fe6dfb9ea99193fc67c4716146452d3d5c77545e6bc3b9e82be6c1d56c4ed\",\"license\":\"MIT\"},\"contracts/ReviewStorage.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.20;\\n\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\n\\n/**\\n * @title ReviewStorage\\n * @notice Stores reviews submitted through the ReviewRegistry and enforces nullifier uniqueness.\\n * @dev Assumes cryptographic proof validity was checked before registry interaction.\\n *      Ownable for potential future administrative functions (e.g., migration).\\n */\\ncontract ReviewStorage is Ownable {\\n    // Total number of reviews stored\\n    uint256 public reviewCount;\\n\\n    // Review struct\\n    struct Review {\\n        uint256 id; // Unique ID for the review\\n        bytes32 productId; // ID of the product reviewed\\n        address reviewer; // Address of the original reviewer\\n        string content; // Text content of the review\\n        uint8 rating; // Numerical rating (1-5)\\n        bytes32 nullifier; // Unique identifier from the ZK proof to prevent duplicates\\n        uint256 timestamp; // Timestamp of submission\\n        string serviceName; // Name of the service/platform where interaction occurred (e.g., \\\"Gumroad\\\")\\n    }\\n\\n    // --- Mappings ---\\n    // Maps review ID to Review struct\\n    mapping(uint256 => Review) public reviews;\\n    // Maps product ID to an array of review IDs for that product\\n    mapping(bytes32 => uint256[]) public productReviews;\\n    // Maps reviewer address to an array of review IDs submitted by that reviewer\\n    mapping(address => uint256[]) public reviewerReviews;\\n    // Maps nullifier hash to boolean indicating if it has been used\\n    // Public visibility allows external checks (e.g., by ReviewRegistry or frontend)\\n    mapping(bytes32 => bool) public usedNullifiers;\\n\\n    // --- Events ---\\n    event ReviewAdded(\\n        uint256 indexed reviewId,\\n        bytes32 indexed productId,\\n        address indexed reviewer,\\n        uint8 rating,\\n        string serviceName\\n    );\\n    event ReviewUpdated(uint256 indexed reviewId, string newContent);\\n    event ReviewDeleted(uint256 indexed reviewId); // Note: Content is cleared, not deleted\\n\\n    /**\\n     * @dev Constructor sets the initial owner of the contract.\\n     */\\n    constructor() Ownable(msg.sender) {}\\n\\n    /**\\n     * @dev Adds a new review. Intended to be called only by the ReviewRegistry contract.\\n     * @notice Checks for nullifier uniqueness before storing.\\n     * @param productId ID of the product being reviewed.\\n     * @param reviewerAddress Address of the user submitting the review.\\n     * @param content Review text content.\\n     * @param rating Numerical rating (1-5).\\n     * @param nullifier Unique identifier from ZK proof (MUST be unique).\\n     * @param serviceName Name of the service (e.g., \\\"Gumroad\\\", \\\"Luma\\\").\\n     * @return The ID of the newly added review.\\n     */\\n    function addReview(\\n        bytes32 productId,\\n        address reviewerAddress, // Passed explicitly by ReviewRegistry\\n        string calldata content,\\n        uint8 rating,\\n        bytes32 nullifier,\\n        string calldata serviceName /* onlyReviewRegistry */\\n    ) external returns (uint256) {\\n        // Access Control Idea: Add a check `require(msg.sender == reviewRegistryAddress, \\\"Only registry allowed\\\");`\\n        // if you deploy ReviewRegistry address immutably or add a setter function for it.\\n        // For now, relying on the system design where only ReviewRegistry calls this.\\n\\n        require(\\n            reviewerAddress != address(0),\\n            \\\"Reviewer address cannot be zero\\\"\\n        );\\n        require(rating >= 1 && rating <= 5, \\\"Rating must be between 1 and 5\\\");\\n\\n        // --- Primary Nullifier Check ---\\n        // Prevents the same proof/purchase from being used for multiple reviews via this contract.\\n        require(!usedNullifiers[nullifier], \\\"Storage: Nullifier already used\\\");\\n        usedNullifiers[nullifier] = true; // Mark as used immediately\\n\\n        // Increment review count and assign ID\\n        reviewCount++;\\n        uint256 newReviewId = reviewCount;\\n\\n        // Create and store the review\\n        reviews[newReviewId] = Review({\\n            id: newReviewId,\\n            productId: productId,\\n            reviewer: reviewerAddress, // Use the passed reviewer address\\n            content: content,\\n            rating: rating,\\n            nullifier: nullifier,\\n            timestamp: block.timestamp,\\n            serviceName: serviceName\\n        });\\n\\n        // Update lookup mappings\\n        productReviews[productId].push(newReviewId);\\n        reviewerReviews[reviewerAddress].push(newReviewId); // Use the passed reviewer address\\n\\n        // Emit event with correct reviewer address\\n        emit ReviewAdded(\\n            newReviewId,\\n            productId,\\n            reviewerAddress,\\n            rating,\\n            serviceName\\n        );\\n\\n        return newReviewId;\\n    }\\n\\n    /**\\n     * @dev Retrieves a review by its ID.\\n     * @param reviewId ID of the review to retrieve.\\n     * @return id Review ID.\\n     * @return productId Product ID.\\n     * @return reviewer Address of the reviewer.\\n     * @return content Review content.\\n     * @return rating Review rating.\\n     * @return timestamp Review timestamp.\\n     * @return serviceName Name of the service.\\n     */\\n    function getReview(\\n        uint256 reviewId\\n    )\\n        external\\n        view\\n        returns (\\n            uint256 id,\\n            bytes32 productId,\\n            address reviewer,\\n            string memory content,\\n            uint8 rating,\\n            uint256 timestamp,\\n            string memory serviceName\\n        )\\n    {\\n        require(reviewId > 0 && reviewId <= reviewCount, \\\"Invalid review ID\\\");\\n        Review storage review = reviews[reviewId];\\n        return (\\n            review.id,\\n            review.productId,\\n            review.reviewer,\\n            review.content,\\n            review.rating,\\n            review.timestamp,\\n            review.serviceName\\n        );\\n    }\\n\\n    /**\\n     * @dev Gets all review IDs for a specific product.\\n     * @param productId ID of the product.\\n     * @return Array of review IDs.\\n     */\\n    function getProductReviews(\\n        bytes32 productId\\n    ) external view returns (uint256[] memory) {\\n        return productReviews[productId];\\n    }\\n\\n    /**\\n     * @dev Gets all review IDs submitted by a specific reviewer.\\n     * @param reviewer Address of the reviewer.\\n     * @return Array of review IDs.\\n     */\\n    function getReviewerReviews(\\n        address reviewer\\n    ) external view returns (uint256[] memory) {\\n        return reviewerReviews[reviewer];\\n    }\\n\\n    /**\\n     * @dev Allows the original reviewer to update the content of their review.\\n     * @param reviewId ID of the review to update.\\n     * @param newContent New review content.\\n     */\\n    function updateReviewContent(\\n        uint256 reviewId,\\n        string calldata newContent\\n    ) external {\\n        require(reviewId > 0 && reviewId <= reviewCount, \\\"Invalid review ID\\\");\\n        // Check against the stored reviewer address\\n        require(\\n            msg.sender == reviews[reviewId].reviewer,\\n            \\\"Not the review owner\\\"\\n        );\\n\\n        reviews[reviewId].content = newContent;\\n        emit ReviewUpdated(reviewId, newContent);\\n    }\\n\\n    /**\\n     * @dev Allows the original reviewer or the contract owner to \\\"delete\\\" a review\\n     *      by clearing its content. The review entry itself remains.\\n     * @param reviewId ID of the review to delete.\\n     */\\n    function deleteReview(uint256 reviewId) external {\\n        require(reviewId > 0 && reviewId <= reviewCount, \\\"Invalid review ID\\\");\\n        require(\\n            msg.sender == reviews[reviewId].reviewer || msg.sender == owner(),\\n            \\\"Not authorized to delete\\\"\\n        );\\n\\n        // Clear content instead of actual deletion to preserve history/ID sequence\\n        reviews[reviewId].content = \\\"\\\";\\n        // Consider clearing rating or adding a 'deleted' flag if needed elsewhere\\n        // reviews[reviewId].rating = 0;\\n\\n        emit ReviewDeleted(reviewId);\\n    }\\n\\n    /**\\n     * @dev Public view function to check if a nullifier has been used.\\n     *      Can be called by ReviewRegistry or external entities.\\n     * @param _nullifier The nullifier to check.\\n     * @return isUsed True if the nullifier exists in the usedNullifiers mapping.\\n     */\\n    function isNullifierUsed(\\n        bytes32 _nullifier\\n    ) external view returns (bool isUsed) {\\n        return usedNullifiers[_nullifier];\\n    }\\n}\\n\",\"keccak256\":\"0x5d6335574b3ce07f24f80f37eb5c7c1a50ae40955cbee6e269ec834abdd47d25\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60806040523480156200001157600080fd5b506040516200197738038062001977833981016040819052620000349162000136565b33806200005c57604051631e4fbdf760e01b8152600060048201526024015b60405180910390fd5b6200006781620000e6565b506001600160a01b038116620000c05760405162461bcd60e51b815260206004820152601760248201527f496e76616c69642073746f726167652061646472657373000000000000000000604482015260640162000053565b600180546001600160a01b0319166001600160a01b039290921691909117905562000168565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6000602082840312156200014957600080fd5b81516001600160a01b03811681146200016157600080fd5b9392505050565b6117ff80620001786000396000f3fe608060405234801561001057600080fd5b506004361061010b5760003560e01c80638979d901116100a2578063b7aa2cab11610071578063b7aa2cab1461027c578063e0f6ef871461029d578063f2fde38b146102a6578063f51acaea146102b9578063f7cbb1b2146102cc57600080fd5b80638979d901146101fc5780638b0cc5d1146102455780638da5cb5b146102585780638fb6d9971461026957600080fd5b806358c0a4c2116100de57806358c0a4c2146101a8578063715018a6146101bb57806373ab8799146101c557806379054391146101d857600080fd5b806311ce02671461011057806322dc7b4c146101405780633017ba09146101635780633a20e9df14610185575b600080fd5b600154610123906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b61015361014e3660046110e8565b61032a565b6040519015158152602001610137565b610176610171366004611117565b61039e565b6040516101379392919061120e565b6101986101933660046110e8565b6104de565b6040516101379493929190611246565b6101536101b63660046112c8565b6106b9565b6101c36106eb565b005b6101c36101d336600461130a565b6106ff565b6101eb6101e63660046110e8565b61089c565b604051610137959493929190611384565b61023061020a3660046113c4565b6001600160a01b0316600090815260046020526040902060018101546002909101549091565b60408051928352602083019190915201610137565b6101c36102533660046113f4565b6109db565b6000546001600160a01b0316610123565b6101c36102773660046113c4565b610c0c565b61028f61028a366004611460565b610cbe565b604051908152602001610137565b61028f60025481565b6101c36102b43660046113c4565b610f46565b6101c36102c73660046112c8565b610f84565b6103056102da3660046113c4565b6004602052600090815260409020805460018201546002909201546001600160a01b03909116919083565b604080516001600160a01b039094168452602084019290925290820152606001610137565b6001546040516310309bd560e11b8152600481018390526000916001600160a01b03169063206137aa90602401602060405180830381865afa158015610374573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061039891906114fe565b92915050565b80516020818301810180516005825292820191909301209152805481906103c490611520565b80601f01602080910402602001604051908101604052809291908181526020018280546103f090611520565b801561043d5780601f106104125761010080835404028352916020019161043d565b820191906000526020600020905b81548152906001019060200180831161042057829003601f168201915b50505050509080600101805461045290611520565b80601f016020809104026020016040519081016040528092919081815260200182805461047e90611520565b80156104cb5780601f106104a0576101008083540402835291602001916104cb565b820191906000526020600020905b8154815290600101906020018083116104ae57829003601f168201915b5050506002909301549192505060ff1683565b600081815260036020526040812080546060928392909182919061055d575050604080518082018252600f81526e155b9adb9bdddb88141c9bd91d58dd608a1b602080830191909152825180840190935260148352732ab735b737bbb71026b0b73ab330b1ba3ab932b960611b908301529350915060009050806106b2565b600481015460009015610581578160040154826003015461057e9190611570565b90505b816001018260020182846004015483805461059b90611520565b80601f01602080910402602001604051908101604052809291908181526020018280546105c790611520565b80156106145780601f106105e957610100808354040283529160200191610614565b820191906000526020600020905b8154815290600101906020018083116105f757829003601f168201915b5050505050935082805461062790611520565b80601f016020809104026020016040519081016040528092919081815260200182805461065390611520565b80156106a05780601f10610675576101008083540402835291602001916106a0565b820191906000526020600020905b81548152906001019060200180831161068357829003601f168201915b50505050509250955095509550955050505b9193509193565b6000600583836040516106cd929190611592565b9081526040519081900360200190206002015460ff16905092915050565b6106f361106b565b6106fd6000611098565b565b600085815260036020526040902054156107605760405162461bcd60e51b815260206004820152601a60248201527f50726f6475637420616c7265616479207265676973746572656400000000000060448201526064015b60405180910390fd5b60028054906000610770836115a2565b91905055506040518060a0016040528086815260200185858080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f860181900481028201810190925284815291810191908590859081908401838280828437600092018290525093855250505060208083018290526040928301829052888252600381529190208251815590820151600182019061082a908261160a565b506040820151600282019061083f908261160a565b506060820151816003015560808201518160040155905050847ff5256294773f828b3866e57ec6256961e17f211b897128cedc18e68ebf7d07b78585858560405161088d94939291906116f3565b60405180910390a25050505050565b600360205260009081526040902080546001820180549192916108be90611520565b80601f01602080910402602001604051908101604052809291908181526020018280546108ea90611520565b80156109375780601f1061090c57610100808354040283529160200191610937565b820191906000526020600020905b81548152906001019060200180831161091a57829003601f168201915b50505050509080600201805461094c90611520565b80601f016020809104026020016040519081016040528092919081815260200182805461097890611520565b80156109c55780601f1061099a576101008083540402835291602001916109c5565b820191906000526020600020905b8154815290600101906020018083116109a857829003601f168201915b5050505050908060030154908060040154905085565b6109e361106b565b82610a275760405162461bcd60e51b81526020600482015260146024820152734e616d652063616e6e6f7420626520656d70747960601b6044820152606401610757565b80610a6d5760405162461bcd60e51b8152602060048201526016602482015275446f6d61696e2063616e6e6f7420626520656d70747960501b6044820152606401610757565b60058484604051610a7f929190611592565b9081526040519081900360200190206002015460ff1615610ae25760405162461bcd60e51b815260206004820152601960248201527f5365727669636520616c726561647920737570706f72746564000000000000006044820152606401610757565b604051806060016040528085858080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f8601819004810282018101909252848152918101919085908590819084018382808284376000920191909152505050908252506001602090910152604051600590610b7c9087908790611592565b90815260405190819003602001902081518190610b99908261160a565b5060208201516001820190610bae908261160a565b50604091820151600291909101805460ff1916911515919091179055517fcc2f05c88fdfbe5bb4f63c89cc0bed3c1ad4e3e234152acb84a6b5c8a8e385fb90610bfe9086908690869086906116f3565b60405180910390a150505050565b610c1461106b565b6001600160a01b038116610c6a5760405162461bcd60e51b815260206004820152601760248201527f496e76616c69642073746f7261676520616464726573730000000000000000006044820152606401610757565b600180546001600160a01b0319166001600160a01b0383169081179091556040519081527f085bd7befe863e597a3bf072a01253551f896d2d989847d26162b1c859c6b15c9060200160405180910390a150565b600080600160009054906101000a90046001600160a01b03166001600160a01b03166360c5a8dd89338a8a8a8f8b8b6040518963ffffffff1660e01b8152600401610d10989796959493929190611725565b6020604051808303816000875af1158015610d2f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610d539190611781565b6000898152600360205260409020805491925090610e4d5760028054906000610d7b836115a2565b90915550506040805160a0810182528a815281518083018352600f81526e155b9adb9bdddb88141c9bd91d58dd608a1b6020828101919091528083019182528351808501855260148152732ab735b737bbb71026b0b73ab330b1ba3ab932b960611b818301528385015260ff8a16606084015260016080840181905260008e815260039092529390208251815590519192909190820190610e1c908261160a565b5060408201516002820190610e31908261160a565b5060608201516003820155608090910151600490910155610e86565b8560ff16816003016000828254610e64919061179a565b925050819055506001816004016000828254610e80919061179a565b90915550505b33600090815260046020526040902080546001600160a01b0316610ec65780546001600160a01b0319163317815560016002820181905580820155610efb565b6001816002016000828254610edb919061179a565b909155505060018181018054600090610ef590849061179a565b90915550505b60405160ff8816815233908b9085907f1365cf3aca33a3a002a06f74281170a3d1a4be8f62925c438b8a3fe75040545a9060200160405180910390a450909998505050505050505050565b610f4e61106b565b6001600160a01b038116610f7857604051631e4fbdf760e01b815260006004820152602401610757565b610f8181611098565b50565b610f8c61106b565b60058282604051610f9e929190611592565b9081526040519081900360200190206002015460ff16610ff85760405162461bcd60e51b815260206004820152601560248201527414d95c9d9a58d9481b9bdd081cdd5c1c1bdc9d1959605a1b6044820152606401610757565b60006005838360405161100c929190611592565b908152604051908190036020018120600201805492151560ff19909316929092179091557f52f6e0779195109314dfb8cf301d33491c63f136afac4c5d4f35aa934b2548139061105f90849084906117ad565b60405180910390a15050565b6000546001600160a01b031633146106fd5760405163118cdaa760e01b8152336004820152602401610757565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6000602082840312156110fa57600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b60006020828403121561112957600080fd5b813567ffffffffffffffff8082111561114157600080fd5b818401915084601f83011261115557600080fd5b81358181111561116757611167611101565b604051601f8201601f19908116603f0116810190838211818310171561118f5761118f611101565b816040528281528760208487010111156111a857600080fd5b826020860160208301376000928101602001929092525095945050505050565b6000815180845260005b818110156111ee576020818501810151868301820152016111d2565b506000602082860101526020601f19601f83011685010191505092915050565b60608152600061122160608301866111c8565b828103602084015261123381866111c8565b9150508215156040830152949350505050565b60808152600061125960808301876111c8565b828103602084015261126b81876111c8565b604084019590955250506060015292915050565b60008083601f84011261129157600080fd5b50813567ffffffffffffffff8111156112a957600080fd5b6020830191508360208285010111156112c157600080fd5b9250929050565b600080602083850312156112db57600080fd5b823567ffffffffffffffff8111156112f257600080fd5b6112fe8582860161127f565b90969095509350505050565b60008060008060006060868803121561132257600080fd5b85359450602086013567ffffffffffffffff8082111561134157600080fd5b61134d89838a0161127f565b9096509450604088013591508082111561136657600080fd5b506113738882890161127f565b969995985093965092949392505050565b85815260a06020820152600061139d60a08301876111c8565b82810360408401526113af81876111c8565b60608401959095525050608001529392505050565b6000602082840312156113d657600080fd5b81356001600160a01b03811681146113ed57600080fd5b9392505050565b6000806000806040858703121561140a57600080fd5b843567ffffffffffffffff8082111561142257600080fd5b61142e8883890161127f565b9096509450602087013591508082111561144757600080fd5b506114548782880161127f565b95989497509550505050565b600080600080600080600060a0888a03121561147b57600080fd5b8735965060208801359550604088013567ffffffffffffffff808211156114a157600080fd5b6114ad8b838c0161127f565b909750955060608a0135915060ff821682146114c857600080fd5b909350608089013590808211156114de57600080fd5b506114eb8a828b0161127f565b989b979a50959850939692959293505050565b60006020828403121561151057600080fd5b815180151581146113ed57600080fd5b600181811c9082168061153457607f821691505b60208210810361155457634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fd5b60008261158d57634e487b7160e01b600052601260045260246000fd5b500490565b8183823760009101908152919050565b6000600182016115b4576115b461155a565b5060010190565b601f82111561160557600081815260208120601f850160051c810160208610156115e25750805b601f850160051c820191505b81811015611601578281556001016115ee565b5050505b505050565b815167ffffffffffffffff81111561162457611624611101565b611638816116328454611520565b846115bb565b602080601f83116001811461166d57600084156116555750858301515b600019600386901b1c1916600185901b178555611601565b600085815260208120601f198616915b8281101561169c5788860151825594840194600190910190840161167d565b50858210156116ba5787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b81835281816020850137506000828201602090810191909152601f909101601f19169091010190565b6040815260006117076040830186886116ca565b828103602084015261171a8185876116ca565b979650505050505050565b8881526001600160a01b038816602082015260c060408201819052600090611750908301888a6116ca565b60ff8716606084015285608084015282810360a08401526117728185876116ca565b9b9a5050505050505050505050565b60006020828403121561179357600080fd5b5051919050565b808201808211156103985761039861155a565b6020815260006117c16020830184866116ca565b94935050505056fea2646970667358221220dee15fd1b97e7c5cd348980bd7ba99cee457849ac0f352ac1d9d61a1bd784df964736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061010b5760003560e01c80638979d901116100a2578063b7aa2cab11610071578063b7aa2cab1461027c578063e0f6ef871461029d578063f2fde38b146102a6578063f51acaea146102b9578063f7cbb1b2146102cc57600080fd5b80638979d901146101fc5780638b0cc5d1146102455780638da5cb5b146102585780638fb6d9971461026957600080fd5b806358c0a4c2116100de57806358c0a4c2146101a8578063715018a6146101bb57806373ab8799146101c557806379054391146101d857600080fd5b806311ce02671461011057806322dc7b4c146101405780633017ba09146101635780633a20e9df14610185575b600080fd5b600154610123906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b61015361014e3660046110e8565b61032a565b6040519015158152602001610137565b610176610171366004611117565b61039e565b6040516101379392919061120e565b6101986101933660046110e8565b6104de565b6040516101379493929190611246565b6101536101b63660046112c8565b6106b9565b6101c36106eb565b005b6101c36101d336600461130a565b6106ff565b6101eb6101e63660046110e8565b61089c565b604051610137959493929190611384565b61023061020a3660046113c4565b6001600160a01b0316600090815260046020526040902060018101546002909101549091565b60408051928352602083019190915201610137565b6101c36102533660046113f4565b6109db565b6000546001600160a01b0316610123565b6101c36102773660046113c4565b610c0c565b61028f61028a366004611460565b610cbe565b604051908152602001610137565b61028f60025481565b6101c36102b43660046113c4565b610f46565b6101c36102c73660046112c8565b610f84565b6103056102da3660046113c4565b6004602052600090815260409020805460018201546002909201546001600160a01b03909116919083565b604080516001600160a01b039094168452602084019290925290820152606001610137565b6001546040516310309bd560e11b8152600481018390526000916001600160a01b03169063206137aa90602401602060405180830381865afa158015610374573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061039891906114fe565b92915050565b80516020818301810180516005825292820191909301209152805481906103c490611520565b80601f01602080910402602001604051908101604052809291908181526020018280546103f090611520565b801561043d5780601f106104125761010080835404028352916020019161043d565b820191906000526020600020905b81548152906001019060200180831161042057829003601f168201915b50505050509080600101805461045290611520565b80601f016020809104026020016040519081016040528092919081815260200182805461047e90611520565b80156104cb5780601f106104a0576101008083540402835291602001916104cb565b820191906000526020600020905b8154815290600101906020018083116104ae57829003601f168201915b5050506002909301549192505060ff1683565b600081815260036020526040812080546060928392909182919061055d575050604080518082018252600f81526e155b9adb9bdddb88141c9bd91d58dd608a1b602080830191909152825180840190935260148352732ab735b737bbb71026b0b73ab330b1ba3ab932b960611b908301529350915060009050806106b2565b600481015460009015610581578160040154826003015461057e9190611570565b90505b816001018260020182846004015483805461059b90611520565b80601f01602080910402602001604051908101604052809291908181526020018280546105c790611520565b80156106145780601f106105e957610100808354040283529160200191610614565b820191906000526020600020905b8154815290600101906020018083116105f757829003601f168201915b5050505050935082805461062790611520565b80601f016020809104026020016040519081016040528092919081815260200182805461065390611520565b80156106a05780601f10610675576101008083540402835291602001916106a0565b820191906000526020600020905b81548152906001019060200180831161068357829003601f168201915b50505050509250955095509550955050505b9193509193565b6000600583836040516106cd929190611592565b9081526040519081900360200190206002015460ff16905092915050565b6106f361106b565b6106fd6000611098565b565b600085815260036020526040902054156107605760405162461bcd60e51b815260206004820152601a60248201527f50726f6475637420616c7265616479207265676973746572656400000000000060448201526064015b60405180910390fd5b60028054906000610770836115a2565b91905055506040518060a0016040528086815260200185858080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f860181900481028201810190925284815291810191908590859081908401838280828437600092018290525093855250505060208083018290526040928301829052888252600381529190208251815590820151600182019061082a908261160a565b506040820151600282019061083f908261160a565b506060820151816003015560808201518160040155905050847ff5256294773f828b3866e57ec6256961e17f211b897128cedc18e68ebf7d07b78585858560405161088d94939291906116f3565b60405180910390a25050505050565b600360205260009081526040902080546001820180549192916108be90611520565b80601f01602080910402602001604051908101604052809291908181526020018280546108ea90611520565b80156109375780601f1061090c57610100808354040283529160200191610937565b820191906000526020600020905b81548152906001019060200180831161091a57829003601f168201915b50505050509080600201805461094c90611520565b80601f016020809104026020016040519081016040528092919081815260200182805461097890611520565b80156109c55780601f1061099a576101008083540402835291602001916109c5565b820191906000526020600020905b8154815290600101906020018083116109a857829003601f168201915b5050505050908060030154908060040154905085565b6109e361106b565b82610a275760405162461bcd60e51b81526020600482015260146024820152734e616d652063616e6e6f7420626520656d70747960601b6044820152606401610757565b80610a6d5760405162461bcd60e51b8152602060048201526016602482015275446f6d61696e2063616e6e6f7420626520656d70747960501b6044820152606401610757565b60058484604051610a7f929190611592565b9081526040519081900360200190206002015460ff1615610ae25760405162461bcd60e51b815260206004820152601960248201527f5365727669636520616c726561647920737570706f72746564000000000000006044820152606401610757565b604051806060016040528085858080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250505090825250604080516020601f8601819004810282018101909252848152918101919085908590819084018382808284376000920191909152505050908252506001602090910152604051600590610b7c9087908790611592565b90815260405190819003602001902081518190610b99908261160a565b5060208201516001820190610bae908261160a565b50604091820151600291909101805460ff1916911515919091179055517fcc2f05c88fdfbe5bb4f63c89cc0bed3c1ad4e3e234152acb84a6b5c8a8e385fb90610bfe9086908690869086906116f3565b60405180910390a150505050565b610c1461106b565b6001600160a01b038116610c6a5760405162461bcd60e51b815260206004820152601760248201527f496e76616c69642073746f7261676520616464726573730000000000000000006044820152606401610757565b600180546001600160a01b0319166001600160a01b0383169081179091556040519081527f085bd7befe863e597a3bf072a01253551f896d2d989847d26162b1c859c6b15c9060200160405180910390a150565b600080600160009054906101000a90046001600160a01b03166001600160a01b03166360c5a8dd89338a8a8a8f8b8b6040518963ffffffff1660e01b8152600401610d10989796959493929190611725565b6020604051808303816000875af1158015610d2f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610d539190611781565b6000898152600360205260409020805491925090610e4d5760028054906000610d7b836115a2565b90915550506040805160a0810182528a815281518083018352600f81526e155b9adb9bdddb88141c9bd91d58dd608a1b6020828101919091528083019182528351808501855260148152732ab735b737bbb71026b0b73ab330b1ba3ab932b960611b818301528385015260ff8a16606084015260016080840181905260008e815260039092529390208251815590519192909190820190610e1c908261160a565b5060408201516002820190610e31908261160a565b5060608201516003820155608090910151600490910155610e86565b8560ff16816003016000828254610e64919061179a565b925050819055506001816004016000828254610e80919061179a565b90915550505b33600090815260046020526040902080546001600160a01b0316610ec65780546001600160a01b0319163317815560016002820181905580820155610efb565b6001816002016000828254610edb919061179a565b909155505060018181018054600090610ef590849061179a565b90915550505b60405160ff8816815233908b9085907f1365cf3aca33a3a002a06f74281170a3d1a4be8f62925c438b8a3fe75040545a9060200160405180910390a450909998505050505050505050565b610f4e61106b565b6001600160a01b038116610f7857604051631e4fbdf760e01b815260006004820152602401610757565b610f8181611098565b50565b610f8c61106b565b60058282604051610f9e929190611592565b9081526040519081900360200190206002015460ff16610ff85760405162461bcd60e51b815260206004820152601560248201527414d95c9d9a58d9481b9bdd081cdd5c1c1bdc9d1959605a1b6044820152606401610757565b60006005838360405161100c929190611592565b908152604051908190036020018120600201805492151560ff19909316929092179091557f52f6e0779195109314dfb8cf301d33491c63f136afac4c5d4f35aa934b2548139061105f90849084906117ad565b60405180910390a15050565b6000546001600160a01b031633146106fd5760405163118cdaa760e01b8152336004820152602401610757565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6000602082840312156110fa57600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b60006020828403121561112957600080fd5b813567ffffffffffffffff8082111561114157600080fd5b818401915084601f83011261115557600080fd5b81358181111561116757611167611101565b604051601f8201601f19908116603f0116810190838211818310171561118f5761118f611101565b816040528281528760208487010111156111a857600080fd5b826020860160208301376000928101602001929092525095945050505050565b6000815180845260005b818110156111ee576020818501810151868301820152016111d2565b506000602082860101526020601f19601f83011685010191505092915050565b60608152600061122160608301866111c8565b828103602084015261123381866111c8565b9150508215156040830152949350505050565b60808152600061125960808301876111c8565b828103602084015261126b81876111c8565b604084019590955250506060015292915050565b60008083601f84011261129157600080fd5b50813567ffffffffffffffff8111156112a957600080fd5b6020830191508360208285010111156112c157600080fd5b9250929050565b600080602083850312156112db57600080fd5b823567ffffffffffffffff8111156112f257600080fd5b6112fe8582860161127f565b90969095509350505050565b60008060008060006060868803121561132257600080fd5b85359450602086013567ffffffffffffffff8082111561134157600080fd5b61134d89838a0161127f565b9096509450604088013591508082111561136657600080fd5b506113738882890161127f565b969995985093965092949392505050565b85815260a06020820152600061139d60a08301876111c8565b82810360408401526113af81876111c8565b60608401959095525050608001529392505050565b6000602082840312156113d657600080fd5b81356001600160a01b03811681146113ed57600080fd5b9392505050565b6000806000806040858703121561140a57600080fd5b843567ffffffffffffffff8082111561142257600080fd5b61142e8883890161127f565b9096509450602087013591508082111561144757600080fd5b506114548782880161127f565b95989497509550505050565b600080600080600080600060a0888a03121561147b57600080fd5b8735965060208801359550604088013567ffffffffffffffff808211156114a157600080fd5b6114ad8b838c0161127f565b909750955060608a0135915060ff821682146114c857600080fd5b909350608089013590808211156114de57600080fd5b506114eb8a828b0161127f565b989b979a50959850939692959293505050565b60006020828403121561151057600080fd5b815180151581146113ed57600080fd5b600181811c9082168061153457607f821691505b60208210810361155457634e487b7160e01b600052602260045260246000fd5b50919050565b634e487b7160e01b600052601160045260246000fd5b60008261158d57634e487b7160e01b600052601260045260246000fd5b500490565b8183823760009101908152919050565b6000600182016115b4576115b461155a565b5060010190565b601f82111561160557600081815260208120601f850160051c810160208610156115e25750805b601f850160051c820191505b81811015611601578281556001016115ee565b5050505b505050565b815167ffffffffffffffff81111561162457611624611101565b611638816116328454611520565b846115bb565b602080601f83116001811461166d57600084156116555750858301515b600019600386901b1c1916600185901b178555611601565b600085815260208120601f198616915b8281101561169c5788860151825594840194600190910190840161167d565b50858210156116ba5787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b81835281816020850137506000828201602090810191909152601f909101601f19169091010190565b6040815260006117076040830186886116ca565b828103602084015261171a8185876116ca565b979650505050505050565b8881526001600160a01b038816602082015260c060408201819052600090611750908301888a6116ca565b60ff8716606084015285608084015282810360a08401526117728185876116ca565b9b9a5050505050505050505050565b60006020828403121561179357600080fd5b5051919050565b808201808211156103985761039861155a565b6020815260006117c16020830184866116ca565b94935050505056fea2646970667358221220dee15fd1b97e7c5cd348980bd7ba99cee457849ac0f352ac1d9d61a1bd784df964736f6c63430008140033",
+  "devdoc": {
+    "details": "Assumes cryptographic proof was verified on-chain via SDK *before* calling submitReview.      Relies on ReviewStorage contract to check nullifier uniqueness. Ownable for admin functions.",
+    "errors": {
+      "OwnableInvalidOwner(address)": [
+        {
+          "details": "The owner is not a valid owner account. (eg. `address(0)`)"
+        }
+      ],
+      "OwnableUnauthorizedAccount(address)": [
+        {
+          "details": "The caller account is not authorized to perform an operation."
+        }
+      ]
+    },
+    "kind": "dev",
+    "methods": {
+      "addService(string,string)": {
+        "details": "Adds a new supported service - only owner.",
+        "params": {
+          "domain": "Service domain.",
+          "name": "Service name (used as key)."
+        }
+      },
+      "constructor": {
+        "details": "Constructor sets the initial owner and the essential storage contract address.",
+        "params": {
+          "_storage": "Address of the deployed ReviewStorage contract."
+        }
+      },
+      "getProduct(bytes32)": {
+        "details": "Gets product information including average rating.",
+        "params": {
+          "productId": "ID of the product."
+        },
+        "returns": {
+          "averageRating": "Average rating (0 if no reviews).",
+          "manufacturer": "Product manufacturer.",
+          "name": "Product name.",
+          "reviewCount": "Number of reviews."
+        }
+      },
+      "getReviewer(address)": {
+        "details": "Gets reviewer information.",
+        "params": {
+          "reviewerAddress": "Address of the reviewer."
+        },
+        "returns": {
+          "reputation": "Reviewer's reputation score.",
+          "reviewCount": "Number of reviews submitted by the reviewer."
+        }
+      },
+      "isNullifierUsed(bytes32)": {
+        "details": "Public view function to check nullifier status by querying the storage contract.",
+        "params": {
+          "nullifier": "The nullifier to check."
+        },
+        "returns": {
+          "isUsed": "Whether the nullifier has been used in storage."
+        }
+      },
+      "isServiceSupported(string)": {
+        "details": "Checks if a service is currently marked as supported.",
+        "params": {
+          "name": "Name of the service to check."
+        },
+        "returns": {
+          "_0": "True if the service is supported, false otherwise."
+        }
+      },
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      },
+      "registerProduct(bytes32,string,string)": {
+        "details": "Registers a new product. Can be called by anyone.      If a product gets its first review via submitReview before being registered,      it will be auto-registered with default details.",
+        "params": {
+          "manufacturer": "Product manufacturer.",
+          "name": "Product name.",
+          "productId": "Unique identifier for the product."
+        }
+      },
+      "removeService(string)": {
+        "details": "Removes a service from the supported list (marks as unsupported) - only owner.",
+        "params": {
+          "name": "Name of the service to remove."
+        }
+      },
+      "renounceOwnership()": {
+        "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+      },
+      "submitReview(bytes32,bytes32,string,uint8,string)": {
+        "details": "Submits review data after proof has been verified via SDK.",
+        "params": {
+          "content": "Review text content.",
+          "nullifier": "Unique identifier to prevent duplicate reviews (checked by storage contract).",
+          "productId": "ID of the product being reviewed.",
+          "rating": "Numerical rating (1-5).",
+          "serviceName": "Name of the service (e.g., \"Gumroad\")."
+        },
+        "returns": {
+          "_0": "The ID of the new review stored in ReviewStorage."
+        }
+      },
+      "transferOwnership(address)": {
+        "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+      },
+      "updateStorageContract(address)": {
+        "details": "Updates the storage contract address - only owner.",
+        "params": {
+          "storageAddr": "New storage contract address."
+        }
+      }
+    },
+    "title": "ReviewRegistry",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "submitReview(bytes32,bytes32,string,uint8,string)": {
+        "notice": "Requires proof to be verified on-chain using the SDK *before* this call."
+      }
+    },
+    "notice": "Manages product/reviewer/service registries and orchestrates review submissions.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 8,
+        "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+        "label": "_owner",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 187,
+        "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+        "label": "storageContract",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_contract(ReviewStorage)1059"
+      },
+      {
+        "astId": 189,
+        "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+        "label": "productCount",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 219,
+        "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+        "label": "products",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_bytes32,t_struct(Product)200_storage)"
+      },
+      {
+        "astId": 224,
+        "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+        "label": "reviewers",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_mapping(t_address,t_struct(Reviewer)207_storage)"
+      },
+      {
+        "astId": 229,
+        "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+        "label": "services",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_mapping(t_string_memory_ptr,t_struct(Service)214_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_contract(ReviewStorage)1059": {
+        "encoding": "inplace",
+        "label": "contract ReviewStorage",
+        "numberOfBytes": "20"
+      },
+      "t_mapping(t_address,t_struct(Reviewer)207_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => struct ReviewRegistry.Reviewer)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Reviewer)207_storage"
+      },
+      "t_mapping(t_bytes32,t_struct(Product)200_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct ReviewRegistry.Product)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Product)200_storage"
+      },
+      "t_mapping(t_string_memory_ptr,t_struct(Service)214_storage)": {
+        "encoding": "mapping",
+        "key": "t_string_memory_ptr",
+        "label": "mapping(string => struct ReviewRegistry.Service)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Service)214_storage"
+      },
+      "t_string_memory_ptr": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      },
+      "t_struct(Product)200_storage": {
+        "encoding": "inplace",
+        "label": "struct ReviewRegistry.Product",
+        "members": [
+          {
+            "astId": 191,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "id",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 193,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "name",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 195,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "manufacturer",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 197,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "totalRating",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 199,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "reviewCount",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "160"
+      },
+      "t_struct(Reviewer)207_storage": {
+        "encoding": "inplace",
+        "label": "struct ReviewRegistry.Reviewer",
+        "members": [
+          {
+            "astId": 202,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "addr",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 204,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "reputation",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 206,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "reviewCount",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_struct(Service)214_storage": {
+        "encoding": "inplace",
+        "label": "struct ReviewRegistry.Service",
+        "members": [
+          {
+            "astId": 209,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "name",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 211,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "domain",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_string_storage"
+          },
+          {
+            "astId": 213,
+            "contract": "contracts/ReviewRegistry.sol:ReviewRegistry",
+            "label": "isSupported",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}
